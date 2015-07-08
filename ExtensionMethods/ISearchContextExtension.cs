@@ -1,6 +1,7 @@
 ﻿using OpenQA.Selenium;
 using OpenQA.Selenium.Support.UI;
 using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 
@@ -43,7 +44,7 @@ namespace SpecFlow.WebExtension
             }
             else if (id.hasAttributes)
             {
-                e = iFind.FindElementByAttribute(id);
+                e = iFind.FindElementByAttributes(id);
             }
             else
             {
@@ -77,11 +78,16 @@ namespace SpecFlow.WebExtension
             return e;
         }
 
-        public static IWebElement FindElementByAttribute(this ISearchContext iFind, ByEx id)
+        public static IWebElement FindElementByAttributes(this ISearchContext iFind, ByEx id)
         {
-            var elements = iFind.FindElements(id.By);
-            var element = elements.FirstOrDefault(e => e.GetAttribute(id.Attributes.Keys.ToArray()[0]) == id.Attributes.Values.ToArray()[0]);
-            return element;
+            IList<IWebElement> elements = iFind.FindElements(id.By);
+            int attributeIndex = 0;
+            while (attributeIndex < id.Attributes.Count && elements.Count > 0)
+            {
+                elements = elements.Where(e => e.GetAttribute(id.Attributes.Keys.ToArray()[attributeIndex]) == id.Attributes.Values.ToArray()[attributeIndex]).ToList();
+                attributeIndex++;
+            }
+            return elements.FirstOrDefault();
         }
 
         public static IWebElement FindElementByText(this ISearchContext iFind, ByEx id, Func<string, string, bool> ComparisonMethod)
