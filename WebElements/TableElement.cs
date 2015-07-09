@@ -34,12 +34,12 @@ namespace SpecFlow.WebExtension
             IWebElement e = null;
             foreach (var row in _rows)
             {
-                e = row.FindElementByText(new ByEx(By.TagName("th"), text), ComparisonMethod);
+                e = row.Find(new ByEx(By.TagName("th"), text, ComparisonMethod));
                 if (e != null)
                 {
                     return e;
                 }
-                e = row.FindElementByText(new ByEx(By.TagName("td"), text), ComparisonMethod);
+                e = row.Find(new ByEx(By.TagName("td"), text, ComparisonMethod));
                 if (e != null)
                 {
                     return e;

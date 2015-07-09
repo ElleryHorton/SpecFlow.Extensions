@@ -11,6 +11,7 @@ namespace SpecFlow.WebExtension
     {
         public By By;
         public string Text = string.Empty;
+        public Func<string, string, bool> TextComparisonMethod;
         public Dictionary<string, string> Attributes = new Dictionary<string,string>();
 
         public bool hasText {get {return Text != string.Empty;}}
@@ -25,6 +26,14 @@ namespace SpecFlow.WebExtension
         {
             By = by;
             Text = text;
+            TextComparisonMethod = string.Equals;
+        }
+
+        public ByEx(By by, string text, Func<string, string, bool> textComparisonMethod)
+        {
+            By = by;
+            Text = text;
+            TextComparisonMethod = textComparisonMethod;
         }
 
         public ByEx(By by, string attributeName, string attributeValue)
