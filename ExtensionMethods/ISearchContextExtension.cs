@@ -135,9 +135,8 @@ namespace SpecFlow.WebExtension
 
         private static IEnumerable<IWebElement> FindElementsByAttributes(this ISearchContext iFind, ByEx id)
         {
-            IEnumerable<IWebElement> elements = iFind.FindElements(id.By);
-            elements = elements.Where(element => id.Attributes.All(attribute => element.GetAttribute(attribute.Key) == attribute.Value));
-            return elements;
+            var elements = iFind.FindElements(id.By);
+            return elements.Where(element => id.Attributes.All(attribute => element.GetAttribute(attribute.Key) == attribute.Value));
         }
 
         private static IEnumerable<IWebElement> FindElementsByText(this ISearchContext iFind, ByEx id)
