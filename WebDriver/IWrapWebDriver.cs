@@ -5,6 +5,7 @@ namespace SpecFlow.WebExtension
 {
     public interface IWrapWebDriver
     {
+        IWebDriver Driver { get; }
         bool LoggedIn { get; }
 
         void Login();

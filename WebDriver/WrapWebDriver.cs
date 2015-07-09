@@ -12,7 +12,7 @@ namespace SpecFlow.WebExtension
         {
             Driver = driver;
         }
-        public IWebDriver Driver { get; set; }
+        public IWebDriver Driver { get; private set; }
 
         protected bool _loggedIn;
         public bool LoggedIn
@@ -48,7 +48,7 @@ namespace SpecFlow.WebExtension
         {
             TryAgain(() =>
             {
-                Driver.Find(id).Click();
+                Find(id).Click();
                 return true;
             });
         }
@@ -56,7 +56,7 @@ namespace SpecFlow.WebExtension
         {
             TryAgain(() =>
             {
-                Driver.Find(id).SendKeys(text);
+                Find(id).SendKeys(text);
                 return true;
             });
         }
@@ -64,15 +64,15 @@ namespace SpecFlow.WebExtension
         {
             TryAgain(() =>
             {
-                Driver.Find(id).Clear();
+                Find(id).Clear();
                 return true;
             });
         }
         public bool Displayed(ByEx id)
         {
             return TryAgain(() =>
-        {
-                return Driver.Find(id).Displayed;
+            {
+                return Find(id).Displayed;
             });
         }
 
