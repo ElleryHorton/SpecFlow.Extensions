@@ -14,7 +14,7 @@ namespace SpecFlow.WebExtension
         public Func<string, string, bool> TextComparisonMethod;
         public Dictionary<string, string> Attributes { get; private set; }
 
-        public bool hasText {get { return string.IsNullOrEmpty(Text); } }
+        public bool hasText {get { return !string.IsNullOrEmpty(Text); } }
         public bool hasAttributes { get { return (Attributes == null) ? false : Attributes.Count > 0; } }
 
         public ByEx(By by)
