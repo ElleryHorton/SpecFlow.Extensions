@@ -47,6 +47,7 @@
   <ItemGroup>
     <Compile Include="ExamplePageObject\LoginPage.cs" />
     <Compile Include="ExtensionMethods\ByEx.cs" />
+    <Compile Include="Hooks\EmptyScenarioIsInconclusive.cs" />
     <Compile Include="WebDriver\ExampleWebDriver.cs" />
     <Compile Include="WebDriver\IWrapWebDriver.cs" />
     <Compile Include="WebDriver\WrapWebDriver.cs" />
