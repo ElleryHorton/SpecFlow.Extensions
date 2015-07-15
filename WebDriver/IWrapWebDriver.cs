@@ -14,6 +14,7 @@ namespace SpecFlow.WebExtension
         void WaitForPageLoad();
 
         // convenience methods
+        bool Exists(ByEx id);
         IWebElement Find(ByEx id);
         IEnumerable<IWebElement> FindAll(ByEx id);
         void Click(ByEx id);

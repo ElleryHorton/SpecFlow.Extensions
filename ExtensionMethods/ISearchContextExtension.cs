@@ -36,6 +36,11 @@ namespace SpecFlow.WebExtension
             return e;
         }
 
+        public static bool Exists(this ISearchContext iFind, ByEx id)
+        {
+            return FindAll(iFind, id, 1, 0).Any(e => e.Displayed == true);
+        }
+
         public static IWebElement Find(this ISearchContext iFind, ByEx id)
         {
             IWebElement e = null;
@@ -62,18 +67,23 @@ namespace SpecFlow.WebExtension
 
         public static IEnumerable<IWebElement> FindAll(this ISearchContext iFind, ByEx id)
         {
+            return FindAll(iFind, id, MAX_RETRIES, 2000);
+        }
+
+        private static IEnumerable<IWebElement> FindAll(this ISearchContext iFind, ByEx id, int retries, int milliseconds)
+        {
             IEnumerable<IWebElement> elements = new List<IWebElement>();
 
             int tryCount = 0;
             int count = elements.Count();
-            while ((tryCount < MAX_RETRIES) && count == 0)
+            while ((tryCount < retries) && count == 0)
             {
                 elements = SelectFindAllMethod(iFind, id, elements);
 
                 tryCount++;
                 if (count == 0)
                 {
-                    Thread.Sleep(2000);
+                    Thread.Sleep(milliseconds);
                 }
             }
 

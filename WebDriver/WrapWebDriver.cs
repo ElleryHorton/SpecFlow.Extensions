@@ -34,6 +34,11 @@ namespace SpecFlow.WebExtension
             Driver.WaitForPageLoad();
         }
 
+        public bool Exists(ByEx id)
+        {
+            return Driver.Exists(id);
+        }
+
         public IWebElement Find(ByEx id)
         {
             return Driver.Find(id);
