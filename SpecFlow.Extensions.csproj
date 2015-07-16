@@ -38,7 +38,9 @@
   <ItemGroup>
     <Compile Include="Framework\Hooks\EmptyScenarioIsInconclusive.cs" />
     <Compile Include="WebDriver\ExampleWebDriver.cs" />
+    <Compile Include="WebDriver\Hooks\WebDriverHook.cs" />
     <Compile Include="WebDriver\IWrapWebDriver.cs" />
+    <Compile Include="WebDriver\WebContext.cs" />
     <Compile Include="WebDriver\WrapWebDriver.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Web\ExamplePageObject\LoginPage.cs" />
