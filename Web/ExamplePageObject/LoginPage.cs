@@ -1,6 +1,6 @@
 ﻿using OpenQA.Selenium;
 
-namespace SpecFlow.WebExtension
+namespace SpecFlow.Extensions.Web
 {
     public class LoginPage
     {

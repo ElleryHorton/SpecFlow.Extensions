@@ -4,7 +4,7 @@ using System.Collections.Generic;
 using System.Linq;
 using TechTalk.SpecFlow;
 
-namespace SpecFlow.WebExtension
+namespace SpecFlow.Extensions.Web
 {
     public class TableElement
     {

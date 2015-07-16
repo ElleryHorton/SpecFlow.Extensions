@@ -1,9 +1,10 @@
 ﻿using OpenQA.Selenium;
+using SpecFlow.Extensions.Web;
 using System;
 using System.Collections.Generic;
 using System.Threading;
 
-namespace SpecFlow.WebExtension
+namespace SpecFlow.Extensions.WebDriver
 {
     abstract public class WrapWebDriver : IWrapWebDriver
     {
@@ -55,6 +56,18 @@ namespace SpecFlow.WebExtension
             {
                 Find(id).Click();
                 return true;
+            });
+        }
+        private void ClickInvisible(ByEx id)
+        {
+            ((IJavaScriptExecutor)Driver).ExecuteScript("arguments[0].Click()", Find(id));
+        }
+        public void Select(ByEx id)
+        {
+            TryAgain(() =>
+            {
+                Find(id).Click();
+                return Find(id).Selected;
             });
         }
         public void SendKeys(ByEx id, string text)

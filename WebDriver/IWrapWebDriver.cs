@@ -1,7 +1,8 @@
 ﻿using OpenQA.Selenium;
+using SpecFlow.Extensions.Web;
 using System.Collections.Generic;
 
-namespace SpecFlow.WebExtension
+namespace SpecFlow.Extensions.WebDriver
 {
     public interface IWrapWebDriver
     {
@@ -18,6 +19,7 @@ namespace SpecFlow.WebExtension
         IWebElement Find(ByEx id);
         IEnumerable<IWebElement> FindAll(ByEx id);
         void Click(ByEx id);
+        void Select(ByEx id);
         void SendKeys(ByEx id, string text);
         void Clear(ByEx id);
         bool Displayed(ByEx id);

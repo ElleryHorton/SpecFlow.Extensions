@@ -5,7 +5,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 
-namespace SpecFlow.WebExtension
+namespace SpecFlow.Extensions.Web
 {
     public static class ISearchContextExtension
     {

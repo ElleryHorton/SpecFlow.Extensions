@@ -5,7 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace SpecFlow.WebExtension
+namespace SpecFlow.Extensions.Web
 {
     public class ByEx
     {

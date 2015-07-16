@@ -7,8 +7,8 @@
     <ProjectGuid>{D96A63F0-D973-4DBC-A052-6F985B9DAE21}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>SpecFlow.WebExtension</RootNamespace>
-    <AssemblyName>SpecFlow.WebExtension</AssemblyName>
+    <RootNamespace>SpecFlow.Extensions</RootNamespace>
+    <AssemblyName>SpecFlow.Extensions</AssemblyName>
     <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <SolutionDir Condition="$(SolutionDir) == '' Or $(SolutionDir) == '*Undefined*'">..\</SolutionDir>
@@ -45,6 +45,7 @@
     <Compile Include="Web\ExtensionMethods\ByEx.cs" />
     <Compile Include="Web\ExtensionMethods\DriverExtension.cs" />
     <Compile Include="Web\ExtensionMethods\ISearchContextExtension.cs" />
+    <Compile Include="Web\WebElements\CheckListElement.cs" />
     <Compile Include="Web\WebElements\TableElement.cs" />
   </ItemGroup>
   <ItemGroup>

@@ -1,6 +1,6 @@
 ﻿using OpenQA.Selenium;
 
-namespace SpecFlow.WebExtension.WebDriver
+namespace SpecFlow.Extensions.WebDriver
 {
     public class ExampleWebDriver : WrapWebDriver, IWrapWebDriver
     {

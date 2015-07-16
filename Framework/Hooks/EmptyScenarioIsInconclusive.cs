@@ -1,7 +1,7 @@
 ﻿using NUnit.Framework;
 using TechTalk.SpecFlow;
 
-namespace Hap.Cloud.Tests.SpecFlow.Web.Hooks
+namespace SpecFlow.Extensions.Framework.Hooks
 {
     [Binding]
     public sealed class EmptyScenarioIsInconclusive

@@ -3,7 +3,7 @@ using OpenQA.Selenium.Support.UI;
 using System;
 using System.Threading;
 
-namespace SpecFlow.WebExtension
+namespace SpecFlow.Extensions.Web
 {
     public static class DriverExtension
     {
