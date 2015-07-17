@@ -11,7 +11,6 @@ namespace SpecFlow.Extensions.Web
     {
         private const int MAX_RETRIES = 3;
 
-
         public static SelectElement FindSelect(this ISearchContext iFind, ByEx id)
         {
             return new SelectElement(iFind.Find(id));

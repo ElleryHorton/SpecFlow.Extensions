@@ -98,22 +98,30 @@ namespace SpecFlow.Extensions.WebDriver
         {
             int tryCount = 0;
             bool success = false;
+            Exception lastException = null;
             while (tryCount < MAX_RETRIES && !success)
             {
                 try
                 {
                     success = func();
                 }
-                catch (Exception)
+                catch (Exception e)
                 {
+                    lastException = e;
                     success = false;
                 }
                 tryCount++;
                 if (!success)
                 {
-                    Thread.Sleep(2000);
+                    Thread.Sleep(1000);
                 }
+                }
+
+            if (!success && lastException != null)
+            {
+                throw lastException;
             }
+
             return success;
         }
     }

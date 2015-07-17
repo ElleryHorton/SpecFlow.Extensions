@@ -7,9 +7,9 @@ namespace SpecFlow.Extensions.Web
 {
     public static class DriverExtension
     {
-        public static void WaitForPageLoad(this IWebDriver driver)
+        public static void WaitForPageLoad(this IWebDriver driver, int seconds = 60)
         {
-            IWait<IWebDriver> wait = new WebDriverWait(driver, TimeSpan.FromSeconds(60.00));
+            IWait<IWebDriver> wait = new WebDriverWait(driver, TimeSpan.FromSeconds(seconds));
             wait.Until(w => ((IJavaScriptExecutor)driver).ExecuteScript("return document.readyState").Equals("complete"));
         }
 
