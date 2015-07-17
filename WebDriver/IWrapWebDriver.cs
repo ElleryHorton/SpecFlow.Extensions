@@ -19,6 +19,7 @@ namespace SpecFlow.Extensions.WebDriver
         IWebElement Find(ByEx id);
         IEnumerable<IWebElement> FindAll(ByEx id);
         void Click(ByEx id);
+        void ClickInvisible(ByEx id);
         void Select(ByEx id);
         void SendKeys(ByEx id, string text);
         void Clear(ByEx id);

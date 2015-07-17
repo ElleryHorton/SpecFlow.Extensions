@@ -58,9 +58,13 @@ namespace SpecFlow.Extensions.WebDriver
                 return true;
             });
         }
-        private void ClickInvisible(ByEx id)
+        public void ClickInvisible(ByEx id)
         {
-            ((IJavaScriptExecutor)Driver).ExecuteScript("arguments[0].Click()", Find(id));
+            TryAgain(() =>
+            {
+                ((IJavaScriptExecutor)Driver).ExecuteScript("arguments[0].Click()", Find(id));
+                return true;
+            });
         }
         public void Select(ByEx id)
         {
