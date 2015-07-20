@@ -23,6 +23,7 @@ namespace SpecFlow.Extensions.WebDriver
         void Select(ByEx id);
         void SendKeys(ByEx id, string text);
         void Clear(ByEx id);
+        void Type(ByEx id, string text);
         bool Displayed(ByEx id);
     }
 }

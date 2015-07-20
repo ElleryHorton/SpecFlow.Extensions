@@ -61,6 +61,11 @@ namespace SpecFlow.Extensions.WebDriver.Hooks
             {
                 //DriverFactory.LogoutBrowsers();
             }
+			else
+			{
+				//TODO go back to a known starting url
+			}
+
             if (_closeBrowsersAfterScenario)
             {
                 //DriverFactory.CloseBrowsers();

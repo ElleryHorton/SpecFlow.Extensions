@@ -90,6 +90,16 @@ namespace SpecFlow.Extensions.WebDriver
                 return true;
             });
         }
+        public void Type(ByEx id, string text)
+        {
+            TryAgain(() =>
+            {
+                Find(id).Click();
+                Find(id).Clear();
+                Find(id).SendKeys(text);
+                return true;
+            });
+        }
         public bool Displayed(ByEx id)
         {
             return TryAgain(() =>
