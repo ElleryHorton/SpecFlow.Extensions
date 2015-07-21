@@ -13,9 +13,17 @@ namespace SpecFlow.Extensions.Database
         public const string DATABASE_TEST_TWO = "Test.Two";
 
         private string _connectionString;
+        private int _databaseDelayMilliseconds = 1000;
 
         public DatabaseHelper(string databaseName)
         {
+            _databaseName = databaseName.ToString();
+            _connectionString = string.Format("Server= localhost; Database= {0}; Integrated Security=True;", _databaseName);
+        }
+
+        public DatabaseHelper(string databaseName, int delayMilliseconds)
+        {
+            _databaseDelayMilliseconds = delayMilliseconds;
             _databaseName = databaseName.ToString();
             _connectionString = string.Format("Server= localhost; Database= {0}; Integrated Security=True;", _databaseName);
         }
@@ -99,7 +107,7 @@ namespace SpecFlow.Extensions.Database
 
         private DataTable Select(string sql)
         {
-            Thread.Sleep(1000);
+            Thread.Sleep(_databaseDelayMilliseconds);
             DataSet ds = Execute(sql);
             return ds.Tables[0];
         }
