@@ -63,7 +63,7 @@ namespace SpecFlow.Extensions.WebDriver.Hooks
             }
 			else
 			{
-				//TODO go back to a known starting url
+				//DriverFactory.NavigateBrowsersHome();
 			}
 
             if (_closeBrowsersAfterScenario)

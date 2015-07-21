@@ -11,30 +11,6 @@ namespace SpecFlow.Extensions.Web
     {
         private const int MAX_RETRIES = 3;
 
-        public static SelectElement FindSelect(this ISearchContext iFind, ByEx id)
-        {
-            return new SelectElement(iFind.Find(id));
-        }
-
-        public static TableElement FindTable(this ISearchContext iFind, ByEx id)
-        {
-            return new TableElement(iFind.Find(id));
-        }
-
-        public static IWebElement FindElementOrNull(this ISearchContext iFind, ByEx id)
-        {
-            IWebElement e;
-            try
-            {
-                e = iFind.FindElement(id.By);
-            }
-            catch
-            {
-                e = null;
-            }
-            return e;
-        }
-
         public static bool Exists(this ISearchContext iFind, ByEx id)
         {
             return FindAll(iFind, id, 1, 0).Any(e => e.Displayed == true);
@@ -88,6 +64,31 @@ namespace SpecFlow.Extensions.Web
 
             return elements;
         }
+
+        public static IWebElement FindElementOrNull(this ISearchContext iFind, ByEx id)
+        {
+            IWebElement e;
+            try
+            {
+                e = iFind.FindElement(id.By);
+            }
+            catch
+            {
+                e = null;
+            }
+            return e;
+        }
+
+        public static SelectElement FindSelect(this ISearchContext iFind, ByEx id)
+        {
+            return new SelectElement(iFind.Find(id));
+        }
+
+        public static TableElement FindTable(this ISearchContext iFind, ByEx id)
+        {
+            return new TableElement(iFind.Find(id));
+        }
+
 
         private static IWebElement SelectFindMethod(ISearchContext iFind, ByEx id, IWebElement e)
         {

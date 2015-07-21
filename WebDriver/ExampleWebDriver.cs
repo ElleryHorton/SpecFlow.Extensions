@@ -15,6 +15,11 @@ namespace SpecFlow.Extensions.WebDriver
         public override void Logout() {
             // log out of your web portal by clicking a link or button, etc.
         }
+        public override void NavigateHome()
+        {
+            // navigate to the home url of your web portal
+            NavigateTo(string.Empty);
+        }
         public override void NavigateTo(string url) {
             // navigate to a url on your web portal
         }
