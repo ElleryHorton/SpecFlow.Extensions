@@ -67,16 +67,23 @@ namespace SpecFlow.Extensions.Web
 
         public static IWebElement FindElementOrNull(this ISearchContext iFind, ByEx id)
         {
-            IWebElement e;
             try
             {
-                e = iFind.FindElement(id.By);
+                IEnumerable<IWebElement> elements = iFind.FindElements(id.By);
+                if (id.hasText && elements.Count() > 0)
+                {
+                    elements = FilterElementsByText(elements, id);
+                }
+                if (id.hasAttributes && elements.Count() > 0)
+                {
+                    elements = FilterElementsByText(elements, id);
+                }
+                return elements.FirstOrDefault();
             }
             catch
             {
-                e = null;
+                return null;
             }
-            return e;
         }
 
         public static SelectElement FindSelect(this ISearchContext iFind, ByEx id)
@@ -146,12 +153,22 @@ namespace SpecFlow.Extensions.Web
         private static IEnumerable<IWebElement> FindElementsByAttributes(this ISearchContext iFind, ByEx id)
         {
             var elements = iFind.FindElements(id.By);
+            return FilterElementsByAttributes(elements, id);
+        }
+
+        private static IEnumerable<IWebElement> FilterElementsByAttributes(IEnumerable<IWebElement> elements, ByEx id)
+        {
             return elements.Where(element => id.Attributes.All(attribute => element.GetAttribute(attribute.Key) == attribute.Value));
         }
 
         private static IEnumerable<IWebElement> FindElementsByText(this ISearchContext iFind, ByEx id)
         {
             var elements = iFind.FindElements(id.By);
+            return FilterElementsByText(elements, id);
+        }
+
+        private static IEnumerable<IWebElement> FilterElementsByText(IEnumerable<IWebElement> elements, ByEx id)
+        {
             return elements.Where(e => id.TextComparisonMethod(e.Text, id.Text));
         }
     }

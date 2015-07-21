@@ -31,21 +31,40 @@ namespace SpecFlow.Extensions.Web
 
         public IWebElement GetCell(string header, string text, Func<string,string,bool> ComparisonMethod)
         {
-            IWebElement e = null;
             foreach (var row in _rows)
             {
-                e = row.Find(new ByEx(By.TagName("th"), text, ComparisonMethod));
+                var e = row.FindElementOrNull(new ByEx(By.TagName("th"), text, ComparisonMethod));
                 if (e != null)
                 {
                     return e;
                 }
-                e = row.Find(new ByEx(By.TagName("td"), text, ComparisonMethod));
+                e = row.FindElementOrNull(new ByEx(By.TagName("td"), text, ComparisonMethod));
                 if (e != null)
                 {
                     return e;
                 }
             }
-            return e;
+            return null;
+        }
+
+        public ByEx GetCellByEx(string header, string text, Func<string, string, bool> ComparisonMethod)
+        {
+            foreach (var row in _rows)
+            {
+                var byEx = new ByEx(By.TagName("th"), text, ComparisonMethod);
+                var e = row.FindElementOrNull(byEx);
+                if (e != null)
+                {
+                    return byEx;
+                }
+                byEx = new ByEx(By.TagName("td"), text, ComparisonMethod);
+                e = row.FindElementOrNull(byEx);
+                if (e != null)
+                {
+                    return byEx;
+                }
+            }
+            return null;
         }
 
         public int RowCount

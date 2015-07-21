@@ -36,6 +36,9 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
+    <Compile Include="Database\DatabaseHelper.cs" />
+    <Compile Include="Database\DatabaseHelperTestOne.cs" />
+    <Compile Include="Database\SQL.cs" />
     <Compile Include="Framework\Hooks\EmptyScenarioIsInconclusive.cs" />
     <Compile Include="WebDriver\ExampleWebDriver.cs" />
     <Compile Include="WebDriver\Hooks\WebDriverHook.cs" />
@@ -59,7 +62,10 @@
       <SpecificVersion>False</SpecificVersion>
       <HintPath>packages\NUnit.2.6.0.12054\lib\nunit.framework.dll</HintPath>
     </Reference>
+    <Reference Include="System" />
+    <Reference Include="System.Data" />
     <Reference Include="System.Drawing" />
+    <Reference Include="System.XML" />
     <Reference Include="TechTalk.SpecFlow, Version=1.9.0.77, Culture=neutral, PublicKeyToken=0778194805d6db41, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>packages\SpecFlow.1.9.0\lib\net35\TechTalk.SpecFlow.dll</HintPath>
