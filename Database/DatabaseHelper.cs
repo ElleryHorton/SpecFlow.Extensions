@@ -12,6 +12,7 @@ namespace SpecFlow.Extensions.Database
         public const string DATABASE_TEST_ONE = "Test.One";
         public const string DATABASE_TEST_TWO = "Test.Two";
 
+        private string _databaseName;
         private string _connectionString;
         private int _databaseDelayMilliseconds = 1000;
 
@@ -44,9 +45,9 @@ namespace SpecFlow.Extensions.Database
             {
                 if (whereParameters.Count > 0)
                 {
-                    var parameters = new List<string>();
-                    whereParameters.ForEach(parameter => parameters.Add(parameter.ToString()));
-                    return string.Format(" WHERE {0}", string.Join(" AND ", parameters));
+                    var parameters = new StringBuilder();
+                    whereParameters.ForEach(parameter => parameters.Append(parameter.ToString()));
+                    return parameters.ToString();
                 }
             }
             return string.Empty;
@@ -57,9 +58,9 @@ namespace SpecFlow.Extensions.Database
             {
                 if (onParameters.Count > 0)
                 {
-                    var parameters = new List<string>();
-                    onParameters.ForEach(parameter => parameters.Add(parameter.ToStringNotEscaped()));
-                    return string.Format(" ON {0}", string.Join(" AND ", parameters));
+                    var parameters = new StringBuilder();
+                    onParameters.ForEach(parameter => parameters.Append(parameter.ToStringNotEscaped()));
+                    return parameters.ToString();
                 }
             }
             return string.Empty;
@@ -157,7 +158,26 @@ namespace SpecFlow.Extensions.Database
             return string.Format("DELETE FROM {0}{1}", tableName, whereParameters);
         }
 
-        private string _databaseName;
+        public int ExecuteStoredProcedure(string storedProcName, Dictionary<string, object> parameters)
+        {
+            int value;
+            using (SqlConnection sqlConnection = new SqlConnection(_connectionString))
+            {
+                sqlConnection.Open();
+                using (SqlCommand sqlCommand = sqlConnection.CreateCommand())
+                {
+                    sqlCommand.CommandType = CommandType.StoredProcedure;
+                    sqlCommand.CommandText = storedProcName;
+
+                    if (parameters != null)
+                    {
+                        parameters.ToList().ForEach(pair => sqlCommand.Parameters.Add(new SqlParameter(pair.Key, pair.Value)));
+                    }
+                    value = (Int32)sqlCommand.ExecuteScalar();
+                }
+            }
+            return value;
+        }
 
         private int ExecuteNonQuery(string sql)
         {
