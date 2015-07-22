@@ -47,6 +47,8 @@ tell us how to identify an IWebElement.~~
 
 <strong>Edit:</strong> I recommend the Page Object to return a ByEx for elements you want to negative test, check the existence of, or check the non-existence. Continue to use IWebElement, SelectElement, *Element, etc. for elements you expect to always be there and are required for the test to be meaningful. For example, a progress bar or fading message might be a good candidate for a ByEx property while a username and password field should be IWebElement properties since a test that couldn't login would be pretty meaningless.
 
+<strong>On Second Thought:</strong> I ran into a situation where an element existed and then the page reload and the element continued to exist. The call to Find/FindElement found the element prior to the page reload. The subsequent call to Click then failed due to the timing crack (StaleElementException). The Click was performed on a IWebElement returned by a Page Object in the step definition and failed the entire test because there was no "Retry Click" logic in the step definition. Had the PageObject returned a ByEx, the IWrapWebDriver.Click() method could have been called which <strong>does</strong> contain retry logic.
+
 To that end, I created a Find method that takes a ByEx (I like to call it the WebElementIdentifier).
 Test code that access the Page Object's properties can then use the ByEx to Find, WaitFor, or make
 sure that IWebElements do not exist. As an added benefit, the resulting Page Object is simpler:
