@@ -32,20 +32,22 @@ object might look like:
   }
 </pre></code>
 
-The problem with this is that a future attempt to implement retry logic was a nightmare. Because the
+~~The problem with this is that a future attempt to implement retry logic was a nightmare. Because the
 Page Object called FindElement, the ability to know which By was used to identify the IWebElement
-was contained entirely in the Page Object. Furthermore, in order to test the negative case (a
+was contained entirely in the Page Object.~~ Furthermore, in order to test the negative case (a
 IWebElement is not found), a FindElementSafe method had to be implemented that would return null
 if the underlying FindElement method threw an exception. More often than not, the null value that
 was returned would inevitably wreck havoc somewhere else in the test code or result in cryptic
 "Object not set to a reference" errors during runtime.
 
-The problem is that the Page Object is fulfilling two duties. For one, the Page Object knows how to
+~~The problem is that the Page Object is fulfilling two duties. For one, the Page Object knows how to
 identify the IWebElement and, two, the Page Object took it upon itself to retreive the IWebElement
 for us. IMHO, the Page Object, like all classes, should only have one responsibility. That is, to
-tell us how to identify an IWebElement.
+tell us how to identify an IWebElement.~~
 
-To that end, I created a Find method that returns a ByEx (I like to call it the WebElementIdentifier).
+<strong>Edit:</strong> I recommend the Page Object to return a ByEx for elements you want to negative test, check the existence of, or check the non-existence. Continue to use IWebElement, SelectElement, *Element, etc. for elements you expect to always be there and are required for the test to be meaningful. For example, a progress bar or fading message might be a good candidate for a ByEx property on a Page Object while a username and password field should be IWebElements since a test that couldn't login would be pretty meaningless.
+
+To that end, I created a Find method that takes a ByEx (I like to call it the WebElementIdentifier).
 Test code that access the Page Object's properties can then use the ByEx to Find, WaitFor, or make
 sure that IWebElements do not exist. As an added benefit, the resulting Page Object is simpler:
 <pre><code>
