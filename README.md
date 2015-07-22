@@ -45,7 +45,7 @@ identify the IWebElement and, two, the Page Object took it upon itself to retrei
 for us. IMHO, the Page Object, like all classes, should only have one responsibility. That is, to
 tell us how to identify an IWebElement.~~
 
-<strong>Edit:</strong> I recommend the Page Object to return a ByEx for elements you want to negative test, check the existence of, or check the non-existence. Continue to use IWebElement, SelectElement, *Element, etc. for elements you expect to always be there and are required for the test to be meaningful. For example, a progress bar or fading message might be a good candidate for a ByEx property on a Page Object while a username and password field should be IWebElements since a test that couldn't login would be pretty meaningless.
+<strong>Edit:</strong> I recommend the Page Object to return a ByEx for elements you want to negative test, check the existence of, or check the non-existence. Continue to use IWebElement, SelectElement, *Element, etc. for elements you expect to always be there and are required for the test to be meaningful. For example, a progress bar or fading message might be a good candidate for a ByEx property while a username and password field should be IWebElement properties since a test that couldn't login would be pretty meaningless.
 
 To that end, I created a Find method that takes a ByEx (I like to call it the WebElementIdentifier).
 Test code that access the Page Object's properties can then use the ByEx to Find, WaitFor, or make
