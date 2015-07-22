@@ -17,19 +17,45 @@ namespace SpecFlow.Extensions.Framework.ExtensionMethods
         {
             if (string.IsNullOrEmpty(original))
             {
-                return original.AppendHash();
+                return original.AppendFullHash(hashLength);
             }
-            else if (original.HasHash())
+            else if (original.HasHash(hashLength))
             {
-                return original.RandomizeHash();
+                return original.RandomizeHash(hashLength);
             }
             else
             {
-                return original.AppendHash();
+                return original.AppendFullHash(hashLength);
             }
         }
 
-        private static string AppendHash(this string original, int hashLength = 4, string hashDelimit = "-")
+        public static string RandomizeShort(this string original, int hashLength = 8, string hashDelimit = "-")
+        {
+            if (string.IsNullOrEmpty(original))
+            {
+                return original.AppendShortHash(hashLength);
+            }
+            else if (original.HasHash(hashLength))
+            {
+                return original.RandomizeHash(hashLength);
+            }
+            else
+            {
+                return original.AppendShortHash(hashLength);
+            }
+        }
+
+        private static string AppendFullHash(this string original, int hashLength = 4, string hashDelimit = "-")
+        {
+            return string.Format("{1}{2}{0}{3}{0}{4}", hashDelimit, GenerateTesterTestPrefix(hashDelimit), original, DateTime.Now.ToString("yyyyMMddHHmmssfff"), GenerateRandomHash(hashLength));
+        }
+
+        private static string AppendShortHash(this string original, int hashLength = 8, string hashDelimit = "-")
+        {
+            return string.Format("{1}{2}{0}{3}", hashDelimit, GenerateTesterTestPrefix(hashDelimit), original, GenerateRandomHash(hashLength));
+        }
+
+        private static string GenerateTesterTestPrefix(string hashDelimit)
         {
             string prefix = string.Empty;
             if (!string.IsNullOrEmpty(TesterHash))
@@ -40,13 +66,12 @@ namespace SpecFlow.Extensions.Framework.ExtensionMethods
             {
                 prefix = string.Format("{0}{1}{2}", prefix, TestHash, hashDelimit);
             }
-
-            return string.Format("{1}{2}{0}{3}{0}{4}", hashDelimit, prefix, original, DateTime.Now.ToString("yyyyMMddHHmmssfff"), GenerateRandomHash());
+            return prefix;
         }
 
         private static string RandomizeHash(this string hashString, int hashLength = 4, string hashDelimit = "-")
         {
-            return hashString.Substring(0, (hashString.Length - (hashString.Length - hashString.LastIndexOf(hashDelimit)) + 1)) + GenerateRandomHash();
+            return hashString.Substring(0, (hashString.Length - (hashString.Length - hashString.LastIndexOf(hashDelimit)) + 1)) + GenerateRandomHash(hashLength);
         }
 
         public static string GenerateRandomHash(int hashLength = 4)

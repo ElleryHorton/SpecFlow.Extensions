@@ -34,6 +34,18 @@ namespace SpecFlow.Extensions.Framework.ExtensionMethods
         }
 
         [Test]
+        public void StringExtensionAppendsShortHash()
+        {
+            string temp1 = "temp";
+            string temp2 = temp1.RandomizeShort();
+
+            Assert.IsFalse(temp1.RandomizeShort().Contains(DateTime.Now.ToString("-yyyyMMddHHmmss")));
+            Assert.AreEqual(13, temp1.RandomizeShort().Length, temp1);
+            Assert.AreEqual(13, temp2.RandomizeShort().Length, temp2);
+            Assert.IsTrue(temp1 != temp2);
+        }
+
+        [Test]
         public void StringExtensionUpdatesHash()
         {
             List<string> hashes = new List<string>();
