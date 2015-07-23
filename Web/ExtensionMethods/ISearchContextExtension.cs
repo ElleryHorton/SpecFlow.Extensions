@@ -76,7 +76,7 @@ namespace SpecFlow.Extensions.Web
                 }
                 if (id.hasAttributes && elements.Count() > 0)
                 {
-                    elements = FilterElementsByText(elements, id);
+                    elements = FilterElementsByAttributes(elements, id);
                 }
                 return elements.FirstOrDefault();
             }

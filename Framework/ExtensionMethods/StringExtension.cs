@@ -7,6 +7,12 @@ namespace SpecFlow.Extensions.Framework.ExtensionMethods
 {
     public static class StringExtension
     {
+        public static bool IsNumeric(this string expression)
+        {
+            double retNum;
+            return Double.TryParse(Convert.ToString(expression), System.Globalization.NumberStyles.Any, System.Globalization.NumberFormatInfo.InvariantInfo, out retNum);
+        }
+
         private static Random _random = new Random();
 
         public static string TestHash {get; set;}

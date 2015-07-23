@@ -41,6 +41,7 @@
     <Compile Include="Database\SQL.cs" />
     <Compile Include="Framework\ExtensionMethods\StringExtension.cs" />
     <Compile Include="Framework\ExtensionMethods\StringExtensionTests.cs" />
+    <Compile Include="Framework\Helpers\StateHelper.cs" />
     <Compile Include="Framework\Hooks\EmptyScenarioIsInconclusive.cs" />
     <Compile Include="WebDriver\ExampleWebDriver.cs" />
     <Compile Include="WebDriver\Hooks\WebDriverHook.cs" />
@@ -52,6 +53,7 @@
     <Compile Include="Web\ExtensionMethods\ByEx.cs" />
     <Compile Include="Web\ExtensionMethods\DriverExtension.cs" />
     <Compile Include="Web\ExtensionMethods\ISearchContextExtension.cs" />
+    <Compile Include="Web\ExtensionMethods\IWebElementExtension.cs" />
     <Compile Include="Web\WebElements\CheckListElement.cs" />
     <Compile Include="Web\WebElements\TableElement.cs" />
   </ItemGroup>
