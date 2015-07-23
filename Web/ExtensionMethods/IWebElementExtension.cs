@@ -8,5 +8,10 @@ namespace SpecFlow.Extensions.Web
         {
             return e.GetAttribute("value");
         }
+
+        public static string Text(this SelectElement e)
+        {
+            return e.SelectedOption.Text;
+        }
     }
 }
