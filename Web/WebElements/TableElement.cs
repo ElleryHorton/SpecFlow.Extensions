@@ -82,7 +82,28 @@ namespace SpecFlow.Extensions.Web
             get { return _headerToIndex.Count; }
         }
 
-        public bool CompareToSpecFlowTable(Table table)
+        public bool CompareToTable(List<string[]> table)
+        {
+            if (table.Count != RowCount)
+            {
+                return false;
+            }
+
+            bool isExact = true;
+            for (int row = 1; row < table.Count; row++)
+            {
+                var colCount = table[row].Count();
+                for (int col = 0; col < colCount; col++)
+                {
+                    string header = table[0][col];
+                    string actualCellText = GetCell(row, header).Text;
+                    isExact = isExact && (table[row][col] == actualCellText);
+                }
+            }
+            return isExact;
+        }
+
+        public bool CompareToTable(Table table)
         {
             if (table.Rows.Count != RowDataCount)
             {
@@ -97,9 +118,7 @@ namespace SpecFlow.Extensions.Web
                 {
                     string actualCellText = GetCell(rowIndex, header).Text;
                     isExact = isExact && (row[header] == actualCellText);
-                    Console.Write(string.Format("{0}\t", actualCellText));
                 }
-                Console.WriteLine();
                 rowIndex++;
             }
             return isExact;

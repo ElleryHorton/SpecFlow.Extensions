@@ -40,7 +40,7 @@ namespace SpecFlow.Extensions.WebDriver
 
 		public bool Exists(ByEx id)
 		{
-			return Driver.Exists(id);
+			return Driver.HasChild(id);
 		}
 
 		public IWebElement Find(ByEx id)

@@ -11,7 +11,7 @@ namespace SpecFlow.Extensions.Web
     {
         private const int MAX_RETRIES = 3;
 
-        public static bool Exists(this ISearchContext iFind, ByEx id)
+        public static bool HasChild(this ISearchContext iFind, ByEx id)
         {
             return FindAll(iFind, id, 1, 0).Any(e => e.Displayed == true);
         }

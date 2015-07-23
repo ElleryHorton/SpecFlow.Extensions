@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Data;
 using System.Data.SqlClient;
 using System.Linq;
+using System.Text;
 using System.Threading;
 
 namespace SpecFlow.Extensions.Database
@@ -78,11 +79,13 @@ namespace SpecFlow.Extensions.Database
 
         public int GetIntegerValue(string valueName, string tableName, SQL whereParameter)
         {
+            Thread.Sleep(_databaseDelayMilliseconds);
             return ExecuteScalar(GetSelectSql(valueName, tableName, whereParameter.ToString()));
         }
 
         public int GetIntegerValue(string valueName, string tableName, List<SQL> whereParameters = null)
         {
+            Thread.Sleep(_databaseDelayMilliseconds);
             return ExecuteScalar(GetSelectSql(valueName, tableName, BuildWhereParameters(whereParameters)));
         }
 
