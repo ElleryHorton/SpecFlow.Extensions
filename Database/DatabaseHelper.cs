@@ -13,21 +13,18 @@ namespace SpecFlow.Extensions.Database
         public const string DATABASE_TEST_ONE = "Test.One";
         public const string DATABASE_TEST_TWO = "Test.Two";
 
-        private string _databaseName;
         private string _connectionString;
         private int _databaseDelayMilliseconds = 1000;
 
         public DatabaseHelper(string databaseName)
         {
-            _databaseName = databaseName.ToString();
-            _connectionString = string.Format("Server= localhost; Database= {0}; Integrated Security=True;", _databaseName);
+            _connectionString = string.Format("Server= localhost; Database= {0}; Integrated Security=True;", databaseName);
         }
 
         public DatabaseHelper(string databaseName, int delayMilliseconds)
         {
             _databaseDelayMilliseconds = delayMilliseconds;
-            _databaseName = databaseName.ToString();
-            _connectionString = string.Format("Server= localhost; Database= {0}; Integrated Security=True;", _databaseName);
+            _connectionString = string.Format("Server= localhost; Database= {0}; Integrated Security=True;", databaseName);
         }
 
         public void Truncate(string tableName)
