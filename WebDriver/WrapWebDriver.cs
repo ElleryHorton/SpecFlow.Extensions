@@ -68,6 +68,7 @@ namespace SpecFlow.Extensions.WebDriver
 			TryAgain(() =>
 			{
 				Find(id).Click();
+				WaitForPageLoad();
 				return true;
 			});
 		}
@@ -84,6 +85,7 @@ namespace SpecFlow.Extensions.WebDriver
 			TryAgain(() =>
 			{
 				Find(id).Click();
+				WaitForPageLoad();
 				return Find(id).Selected;
 			});
 		}

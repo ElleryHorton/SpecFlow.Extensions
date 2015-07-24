@@ -89,7 +89,6 @@ namespace SpecFlow.Extensions.Web
                 return false;
             }
 
-            bool isExact = true;
             for (int row = 1; row < table.Count; row++)
             {
                 var colCount = table[row].Count();
@@ -97,10 +96,13 @@ namespace SpecFlow.Extensions.Web
                 {
                     string header = table[0][col];
                     string actualCellText = GetCell(row, header).Text;
-                    isExact = isExact && (table[row][col] == actualCellText);
+                    if (table[row][col] != actualCellText)
+                    {
+                        return false;
+                    }
                 }
             }
-            return isExact;
+            return true;
         }
 
         public bool CompareToTable(Table table)

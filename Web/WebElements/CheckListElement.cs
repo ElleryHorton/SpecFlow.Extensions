@@ -12,23 +12,16 @@ namespace SpecFlow.Extensions.Web
         private IWebElement _content;
         public CheckListElement(IWebElement element)
         {
-            _checkboxes = new Dictionary<string, IWebElement>();
-            _content = element;
-
-            var checkBoxLabels = _content.FindElements(By.TagName("span"));
-            var checkBoxElements = _content.FindElements(By.TagName("input"));
-            if (checkBoxLabels.Count != checkBoxElements.Count)
-                throw new InvalidCastException();
-
-            for (int i = 0; i < checkBoxLabels.Count; i++)
-            {
-                _checkboxes.Add(checkBoxLabels[i].Text, checkBoxElements[i]);
-            }
+            _content = element;            
         }
 
         public IWebElement GetCheckBoxElement(string text)
         {
-            return _checkboxes.FirstOrDefault(checkbox => checkbox.Key.Equals(text)).Value;
+            var checkBoxLabels = _content.FindElements(By.TagName("span"));
+            var checkBoxElements = _content.FindElements(By.TagName("input"));
+            if (checkBoxLabels.Count != checkBoxElements.Count)
+                throw new InvalidCastException();
+            return checkBoxElements.ElementAt(checkBoxLabels.IndexOf(checkBoxLabels.FirstOrDefault(checkbox => checkbox.Text == text)));
         }
 
         public ByEx GetByExId(string text)

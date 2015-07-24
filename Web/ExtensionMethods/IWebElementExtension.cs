@@ -6,7 +6,7 @@ namespace SpecFlow.Extensions.Web
     {
         public static string Value(this IWebElement e)
         {
-            return e.GetAttribute("value");
+            return e.GetAttribute("value") ?? string.Empty;;
         }
 
         public static string Text(this SelectElement e)
