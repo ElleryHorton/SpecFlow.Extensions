@@ -69,7 +69,7 @@ namespace SpecFlow.Extensions.Web
         {
             try
             {
-                IEnumerable<IWebElement> elements = iFind.FindElements(id.By);
+                IEnumerable<IWebElement> elements = id.isVisible ? iFind.FindElements(id.By).Where(e => e.Displayed) : iFind.FindElements(id.By);
                 if (id.hasText && elements.Count() > 0)
                 {
                     elements = FilterElementsByText(elements, id);
@@ -152,7 +152,7 @@ namespace SpecFlow.Extensions.Web
 
         private static IEnumerable<IWebElement> FindElementsByAttributes(this ISearchContext iFind, ByEx id)
         {
-            var elements = iFind.FindElements(id.By);
+            var elements = id.isVisible ? iFind.FindElements(id.By).Where(e => e.Displayed) : iFind.FindElements(id.By);
             return FilterElementsByAttributes(elements, id);
         }
 
@@ -163,7 +163,7 @@ namespace SpecFlow.Extensions.Web
 
         private static IEnumerable<IWebElement> FindElementsByText(this ISearchContext iFind, ByEx id)
         {
-            var elements = iFind.FindElements(id.By);
+            var elements = id.isVisible ? iFind.FindElements(id.By).Where(e => e.Displayed) : iFind.FindElements(id.By);
             return FilterElementsByText(elements, id);
         }
 

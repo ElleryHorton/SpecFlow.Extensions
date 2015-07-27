@@ -14,39 +14,45 @@ namespace SpecFlow.Extensions.Web
         public Func<string, string, bool> TextComparisonMethod;
         public Dictionary<string, string> Attributes { get; private set; }
 
-        public bool hasText {get { return !string.IsNullOrEmpty(Text); } }
+        public bool hasText { get { return !string.IsNullOrEmpty(Text); } }
         public bool hasAttributes { get { return (Attributes == null) ? false : Attributes.Count > 0; } }
+        public bool isVisible;
 
-        public ByEx(By by)
+        public ByEx(By by, bool visibleOnly = true)
         {
             By = by;
+            isVisible = visibleOnly;
         }
 
-        public ByEx(By by, string text)
+        public ByEx(By by, string text, bool visibleOnly = true)
         {
             By = by;
             Text = text;
             TextComparisonMethod = string.Equals;
+            isVisible = visibleOnly;
         }
 
-        public ByEx(By by, string text, Func<string, string, bool> textComparisonMethod)
+        public ByEx(By by, string text, Func<string, string, bool> textComparisonMethod, bool visibleOnly = true)
         {
             By = by;
             Text = text;
             TextComparisonMethod = textComparisonMethod;
+            isVisible = visibleOnly;
         }
 
-        public ByEx(By by, string attributeName, string attributeValue)
+        public ByEx(By by, string attributeName, string attributeValue, bool visibleOnly = true)
         {
             By = by;
             Attributes = new Dictionary<string, string>();
             Attributes.Add(attributeName, attributeValue);
+            isVisible = visibleOnly;
         }
 
-        public ByEx(By by, Dictionary<string, string> attr)
+        public ByEx(By by, Dictionary<string, string> attr, bool visibleOnly = true)
         {
             By = by;
             Attributes = attr ?? new Dictionary<string, string>();
+            isVisible = visibleOnly;
         }
     }
 }
