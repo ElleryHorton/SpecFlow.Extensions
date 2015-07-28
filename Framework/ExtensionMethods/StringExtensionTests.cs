@@ -12,7 +12,8 @@ namespace SpecFlow.Extensions.Framework.ExtensionMethods
         public void ResetStringExtensionHashes()
         {
             StringExtension.TesterHash = string.Empty;
-            StringExtension.TestHash = string.Empty;
+            StringExtension.FeatureHash = string.Empty;
+            StringExtension.ScenarioHash = string.Empty;
         }
 
 
@@ -36,11 +37,11 @@ namespace SpecFlow.Extensions.Framework.ExtensionMethods
         public void StringExtensionAppendsShortHash()
         {
             string temp1 = "temp";
-            string temp2 = temp1.RandomizeShort();
+            string temp2 = temp1.RandomizeNoTimestamp();
 
-            Assert.IsFalse(temp1.RandomizeShort().Contains(DateTime.Now.ToString("-yyyyMMddHHmmss")));
-            Assert.AreEqual(13, temp1.RandomizeShort().Length, temp1);
-            Assert.AreEqual(13, temp2.RandomizeShort().Length, temp2);
+            Assert.IsFalse(temp1.RandomizeNoTimestamp().Contains(DateTime.Now.ToString("-yyyyMMddHHmmss")));
+            Assert.AreEqual(9, temp1.RandomizeNoTimestamp().Length, temp1);
+            Assert.AreEqual(9, temp2.RandomizeNoTimestamp().Length, temp2);
             Assert.IsTrue(temp1 != temp2);
         }
 
@@ -69,20 +70,23 @@ namespace SpecFlow.Extensions.Framework.ExtensionMethods
         public void StringExtensionSetsHash()
         {
             string tester = "ELH";
-            string test = "SESH";
+            string test1 = "SESH";
+            string test2 = "HSES";
             string temp = "temp";
 
-            StringExtension.TestHash = test;
+            StringExtension.FeatureHash = test1;
+            StringExtension.ScenarioHash = test2;
 
-            Assert.IsTrue(temp.Randomize().StartsWith(test + "-temp"));
+            Assert.IsTrue(temp.Randomize().StartsWith(string.Format("temp-{0}-{1}-", test1, test2)));
 
             StringExtension.TesterHash = tester;
 
-            Assert.IsTrue(temp.Randomize().StartsWith(tester + "-" + test + "-temp"));
+            Assert.IsTrue(temp.Randomize().StartsWith(string.Format("temp-{0}-{1}-{2}-", tester, test1, test2)));
 
-            StringExtension.TestHash = string.Empty;
+            StringExtension.FeatureHash = string.Empty;
+            StringExtension.ScenarioHash = string.Empty;
 
-            Assert.IsTrue(temp.Randomize().StartsWith(tester + "-temp-"));
+            Assert.IsTrue(temp.Randomize().StartsWith(string.Format("temp-{0}-", tester)));
             
 
                         

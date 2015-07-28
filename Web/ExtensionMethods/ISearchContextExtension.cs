@@ -46,21 +46,13 @@ namespace SpecFlow.Extensions.Web
 
         private static IEnumerable<IWebElement> FindAll(this ISearchContext iFind, ByEx id, int retries, int milliseconds)
         {
-            IEnumerable<IWebElement> elements = new List<IWebElement>();
-
-            int tryCount = 0;
-            int count = elements.Count();
-            while ((tryCount < retries) && count == 0)
+            var elements = SelectFindAllMethod(iFind, id);
+            while ((retries > 0) && elements.Count() == 0)
             {
-                elements = SelectFindAllMethod(iFind, id, elements);
-
-                tryCount++;
-                if (count == 0)
-                {
-                    Thread.Sleep(milliseconds);
-                }
+                Thread.Sleep(milliseconds);
+                elements = SelectFindAllMethod(iFind, id);
+                retries--;
             }
-
             return elements;
         }
 
@@ -87,7 +79,16 @@ namespace SpecFlow.Extensions.Web
 
         public static SelectElement FindSelect(this ISearchContext iFind, ByEx id)
         {
-            return new SelectElement(iFind.Find(id));
+            int tryCount = 0;
+            var e = new SelectElement(iFind.Find(id));
+
+            while ((tryCount < MAX_RETRIES) && e.Options.Count == 0)
+            {
+                Thread.Sleep(1000);
+                e = new SelectElement(iFind.Find(id));
+                tryCount++;
+            }
+            return e;
         }
 
         public static TableElement FindTable(this ISearchContext iFind, ByEx id)
@@ -132,8 +133,9 @@ namespace SpecFlow.Extensions.Web
             return list.First();
         }
 
-        private static IEnumerable<IWebElement> SelectFindAllMethod(ISearchContext iFind, ByEx id, IEnumerable<IWebElement> elements)
+        private static IEnumerable<IWebElement> SelectFindAllMethod(ISearchContext iFind, ByEx id)
         {
+            IEnumerable<IWebElement> elements = null;
             if (id.hasText)
             {
                 elements = iFind.FindElementsByText(id);
