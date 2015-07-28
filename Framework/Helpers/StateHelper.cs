@@ -1,4 +1,5 @@
 ﻿using System;
+
 namespace SpecFlow.Extensions.Framework.Helpers
 {
     public static class StateHelper

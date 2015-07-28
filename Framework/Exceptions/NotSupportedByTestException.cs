@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace SpecFlow.Extensions.Framework.ExtensionMethods
+namespace SpecFlow.Extensions.Framework.Exceptions
 {
     // denotes a code path or outcome that is intentionally not supported
     public class NotSupportedByTestException : NotSupportedException

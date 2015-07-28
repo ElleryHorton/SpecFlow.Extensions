@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Data;
 using System.Data.SqlClient;
 using System.Linq;
@@ -173,7 +172,7 @@ namespace SpecFlow.Extensions.Database
                     {
                         parameters.ToList().ForEach(pair => sqlCommand.Parameters.Add(new SqlParameter(pair.Key, pair.Value)));
                     }
-                    value = (Int32)sqlCommand.ExecuteScalar();
+                    value = (int)sqlCommand.ExecuteScalar();
                 }
             }
             return value;
@@ -200,7 +199,7 @@ namespace SpecFlow.Extensions.Database
                 using (SqlCommand sqlCommand = new SqlCommand(sql, sqlConnection))
                 {
                     sqlCommand.CommandText = sql;
-                    value = (Int32)sqlCommand.ExecuteScalar();
+                    value = (int)sqlCommand.ExecuteScalar();
                 }
             }
             return value;
