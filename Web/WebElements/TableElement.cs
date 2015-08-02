@@ -1,4 +1,5 @@
 ﻿using OpenQA.Selenium;
+using SpecFlow.Extensions.Web.ExtensionMethods;
 using System;
 using System.Collections.Generic;
 using System.Linq;

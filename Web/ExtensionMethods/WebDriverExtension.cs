@@ -3,9 +3,9 @@ using OpenQA.Selenium.Support.UI;
 using System;
 using System.Threading;
 
-namespace SpecFlow.Extensions.Web
+namespace SpecFlow.Extensions.Web.ExtensionMethods
 {
-    public static class DriverExtension
+    public static class WebDriverExtension
     {
         public static void WaitForPageLoad(this IWebDriver driver, int seconds = 60)
         {
@@ -13,17 +13,17 @@ namespace SpecFlow.Extensions.Web
             wait.Until(w => ((IJavaScriptExecutor)driver).ExecuteScript("return document.readyState").Equals("complete"));
         }
 
-        public static void WaitForElement(this IWebDriver driver, ByEx id)
+        public static void WaitForElement(this IWebDriver driver, ByEx byEx)
         {
             const int TIME_MAX = 10;
             int time_current = 0;
 
-            var e = driver.FindElementOrNull(id);
+            var e = driver.FindElementOrNull(byEx);
             while ( (time_current < TIME_MAX) && e == null )
             {
                 Thread.Sleep(1000);
                 time_current++;
-                e = driver.FindElementOrNull(id);
+                e = driver.FindElementOrNull(byEx);
             }
             int time_delta = Math.Max(0, TIME_MAX - time_current);
             var wait = new WebDriverWait(driver, TimeSpan.FromSeconds(time_delta));

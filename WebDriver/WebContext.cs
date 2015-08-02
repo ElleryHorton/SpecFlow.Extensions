@@ -1,7 +1,8 @@
-﻿namespace SpecFlow.Extensions.WebDriver
+﻿using SpecFlow.Extensions.WebDriver.PortalDriver;
+namespace SpecFlow.Extensions.WebDriver
 {
     public class WebContext
     {
-        public IWrapWebDriver PortalDriver { get; set; }
+        public IPortalDriver PortalDriver { get; set; }
     }
 }
