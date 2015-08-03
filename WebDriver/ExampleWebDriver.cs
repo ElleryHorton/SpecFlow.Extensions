@@ -7,6 +7,7 @@ namespace SpecFlow.Extensions.WebDriver
     {
         public ExampleWebDriver(IWebDriver driver) : base(driver) {
             // initialize your web driver for a specific web portal
+            // configure timeouts from config or environment
             // get credentials and urls for example
         }
 
@@ -24,10 +25,9 @@ namespace SpecFlow.Extensions.WebDriver
         public void NavigateHome()
         {
             // navigate to the home url of your web portal
-            NavigateTo(string.Empty);
         }
         public void NavigateTo(string url) {
-            // navigate to a url on your web portal
+            Navigate().GoToUrl(url);
         }
     }
 }

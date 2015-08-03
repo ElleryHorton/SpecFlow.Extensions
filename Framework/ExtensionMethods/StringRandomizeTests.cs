@@ -6,23 +6,23 @@ using System.Collections.Generic;
 namespace SpecFlow.Extensions.Framework.ExtensionMethods
 {
     [TestFixture]
-    public class StringExtensionTests
+    public class StringRandomizeTests
     {
         [SetUp]
         public void ResetStringExtensionHashes()
         {
-            StringExtension.TesterHash = string.Empty;
-            StringExtension.FeatureHash = string.Empty;
-            StringExtension.ScenarioHash = string.Empty;
+            StringRandomize.TesterHash = string.Empty;
+            StringRandomize.FeatureHash = string.Empty;
+            StringRandomize.ScenarioHash = string.Empty;
         }
 
 
         [Test]
         public void StringExtensionCreatesHash()
         {
-            Assert.AreEqual(2, StringExtension.GenerateRandomHash(2).Length);
-            Assert.AreEqual(4, StringExtension.GenerateRandomHash(4).Length);
-            Assert.AreEqual(6, StringExtension.GenerateRandomHash(6).Length);
+            Assert.AreEqual(2, StringRandomize.GenerateRandomHash(2).Length);
+            Assert.AreEqual(4, StringRandomize.GenerateRandomHash(4).Length);
+            Assert.AreEqual(6, StringRandomize.GenerateRandomHash(6).Length);
         }
 
         [Test]
@@ -74,17 +74,17 @@ namespace SpecFlow.Extensions.Framework.ExtensionMethods
             string test2 = "HSES";
             string temp = "temp";
 
-            StringExtension.FeatureHash = test1;
-            StringExtension.ScenarioHash = test2;
+            StringRandomize.FeatureHash = test1;
+            StringRandomize.ScenarioHash = test2;
 
             Assert.IsTrue(temp.Randomize().StartsWith(string.Format("temp-{0}-{1}-", test1, test2)));
 
-            StringExtension.TesterHash = tester;
+            StringRandomize.TesterHash = tester;
 
             Assert.IsTrue(temp.Randomize().StartsWith(string.Format("temp-{0}-{1}-{2}-", tester, test1, test2)));
 
-            StringExtension.FeatureHash = string.Empty;
-            StringExtension.ScenarioHash = string.Empty;
+            StringRandomize.FeatureHash = string.Empty;
+            StringRandomize.ScenarioHash = string.Empty;
 
             Assert.IsTrue(temp.Randomize().StartsWith(string.Format("temp-{0}-", tester)));
             

@@ -21,7 +21,7 @@ namespace SpecFlow.Extensions.WebDriver
 
         public IPortalDriver GetDriver()
         {
-            var driver = new ExampleWebDriver(GetDriver(DriverTypes.IE));
+            var driver = new ExampleWebDriver(GetDriver(DriverTypes.Chrome));
             _driverBag.Add(driver);
             return driver;
         }
@@ -53,6 +53,7 @@ namespace SpecFlow.Extensions.WebDriver
                     driver = new NgWebDriver(driver);
                     break;
             }
+            ((NgWebDriver)driver).IgnoreSynchronization = true;
             return driver;
         }
 

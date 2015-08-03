@@ -1,4 +1,5 @@
 ﻿using OpenQA.Selenium;
+using OpenQA.Selenium.Internal;
 using OpenQA.Selenium.Support.UI;
 using System;
 using System.Threading;
@@ -10,7 +11,17 @@ namespace SpecFlow.Extensions.Web.ExtensionMethods
         public static void WaitForPageLoad(this IWebDriver driver, int seconds = 60)
         {
             IWait<IWebDriver> wait = new WebDriverWait(driver, TimeSpan.FromSeconds(seconds));
-            wait.Until(w => ((IJavaScriptExecutor)driver).ExecuteScript("return document.readyState").Equals("complete"));
+            var d = (driver is IWrapsDriver) ? ((IWrapsDriver)driver).WrappedDriver : driver;
+            wait.Until(w => ((IJavaScriptExecutor)d).ExecuteScript("return document.readyState").Equals("complete"));
+        }
+
+        public static void WaitForUrlToChange(this IWebDriver driver, string oldUrl, int timeMilliseconds = 2000)
+        {
+            while (driver.Url == oldUrl && timeMilliseconds > 0)
+            {
+                Thread.Sleep(100);
+                timeMilliseconds -= 100;
+            }
         }
 
         public static void WaitForElement(this IWebDriver driver, ByEx byEx)

@@ -15,15 +15,25 @@ namespace SpecFlow.Extensions.WebDriver.PortalDriver
     public abstract class PortalWebDriver : WrapWebDriver, IPortalInteract, IWebDriver, IWrapsDriver
     {
         private readonly int _maxFindAttempts;
+        private readonly int _maxTimeoutMilliseconds;
 
-        public PortalWebDriver(IWebDriver driver, int maxFindAttempts = 3) : base(driver)
+        public PortalWebDriver(IWebDriver driver, int maxFindAttempts = 3, int maxTimeoutMilliseconds = 2000) : base(driver)
         {
             _maxFindAttempts = maxFindAttempts;
+            _maxTimeoutMilliseconds = maxTimeoutMilliseconds;
         }
         
         public void WaitForPageLoad()
         {
             WrappedDriver.WaitForPageLoad();
+        }
+
+        public bool ClickChangesUrl(IWebElement element)
+        {
+            string oldUrl = WrappedDriver.Url;
+            Click(element);
+            WrappedDriver.WaitForUrlToChange(oldUrl, _maxTimeoutMilliseconds);
+            return oldUrl != WrappedDriver.Url;
         }
 
         public IWebElement Find(ByEx byEx)

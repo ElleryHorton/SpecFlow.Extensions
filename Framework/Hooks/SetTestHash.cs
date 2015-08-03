@@ -10,8 +10,8 @@ namespace SpecFlow.Extensions.Framework.Hooks
         [BeforeScenario]
         public void BeforeScenario()
         {
-            StringExtension.FeatureHash = GetUpperCaseOrFirstCharacterOfEachWord(FeatureContext.Current.FeatureInfo.Title);
-            StringExtension.ScenarioHash = GetUpperCaseOrFirstCharacterOfEachWord(ScenarioContext.Current.ScenarioInfo.Title);
+            StringRandomize.FeatureHash = GetUpperCaseOrFirstCharacterOfEachWord(FeatureContext.Current.FeatureInfo.Title);
+            StringRandomize.ScenarioHash = GetUpperCaseOrFirstCharacterOfEachWord(ScenarioContext.Current.ScenarioInfo.Title);
         }
 
         private static string GetUpperCaseOrFirstCharacterOfEachWord(string sentence)

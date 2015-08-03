@@ -10,6 +10,7 @@ namespace SpecFlow.Extensions.WebDriver.PortalDriver
     public interface IPortalInteract
     {
         void WaitForPageLoad();
+        bool ClickChangesUrl(IWebElement element);
 
         /*
          * These are convenience methods so that users of IPortalDriver do not have to access the Driver.Find methods

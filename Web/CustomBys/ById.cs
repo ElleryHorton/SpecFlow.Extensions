@@ -1,4 +1,5 @@
 ﻿using OpenQA.Selenium;
+using SpecFlow.Extensions.Framework.ExtensionMethods;
 using System;
 using System.Collections.ObjectModel;
 using System.Globalization;
@@ -24,6 +25,18 @@ namespace SpecFlow.Extensions.Web.CustomBys
         public class Attribute : BaseAttribute
         {
             public Attribute(string usingString) : base(activator, usingString) { }
+        }
+
+        public class Capitalize : BaseCustomBy
+        {
+            private static readonly TextInfo textInfo = new CultureInfo("en-US", false).TextInfo;
+            public Capitalize(string usingString) : base(activator, usingString.FirstLetterToUpper()) { }
+        }
+
+        public class Decapitalize : BaseCustomBy
+        {
+            private static readonly TextInfo textInfo = new CultureInfo("en-US", false).TextInfo;
+            public Decapitalize(string usingString) : base(activator, usingString.FirstLetterToLower()) { }
         }
 
         public class TitleCase : BaseCustomBy

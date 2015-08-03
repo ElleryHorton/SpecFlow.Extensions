@@ -49,7 +49,8 @@
     <Compile Include="Framework\ExtensionMethods\ByteArrayExtension.cs" />
     <Compile Include="Framework\ExtensionMethods\SpecFlowTableExtension.cs" />
     <Compile Include="Framework\ExtensionMethods\StringExtension.cs" />
-    <Compile Include="Framework\ExtensionMethods\StringExtensionTests.cs" />
+    <Compile Include="Framework\ExtensionMethods\StringRandomize.cs" />
+    <Compile Include="Framework\ExtensionMethods\StringRandomizeTests.cs" />
     <Compile Include="Framework\Helpers\NullHelper.cs" />
     <Compile Include="Framework\Helpers\StateHelper.cs" />
     <Compile Include="Framework\Helpers\Tester.cs" />
