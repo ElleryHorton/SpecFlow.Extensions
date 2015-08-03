@@ -17,7 +17,7 @@ namespace SpecFlow.Extensions.PageObjects
         public Page(IWebDriver WebDriver)
         {
             IElementLocator retryingLocator = new RetryingElementLocator(WebDriver, TimeSpan.FromSeconds(5));
-            PageFactory.InitElements(this, retryingLocator);
+            OpenQA.Selenium.Support.PageObjects.PageFactory.InitElements(this, retryingLocator);
         }
     }
 }

@@ -17,13 +17,21 @@ namespace SpecFlow.Extensions.WebDriver
         {
             IE, Chrome
         }
-        private List<IPortalDriver> _driverBag = new List<IPortalDriver>();
+        private static List<IPortalDriver> _driverBag = new List<IPortalDriver>();
 
         public IPortalDriver GetDriver()
         {
-            var driver = new ExampleWebDriver(GetDriver(DriverTypes.Chrome));
-            _driverBag.Add(driver);
-            return driver;
+            if (_driverBag.Count == 0)
+            {
+                var driver = new ExampleWebDriver(GetDriver(DriverTypes.Chrome));
+                _driverBag.Add(driver);
+                return driver;
+            }
+            else
+            {
+                // TODO add logic to handle multiple drivers at the same time
+                return _driverBag.First();
+            }
         }
 
         // TODO randomize the driver every few hours to keep testers on their toes :)
@@ -86,6 +94,8 @@ namespace SpecFlow.Extensions.WebDriver
             {
 
             }
+
+            _driverBag.Clear();
         }
     }
 }

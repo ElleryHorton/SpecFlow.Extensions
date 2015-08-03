@@ -58,6 +58,7 @@
     <Compile Include="Framework\Hooks\SetTestHash.cs" />
     <Compile Include="PageObjects\LoginExamplePage.cs" />
     <Compile Include="PageObjects\Page.cs" />
+    <Compile Include="PageObjects\PageFactory.cs" />
     <Compile Include="WebDriver\ExampleDriverFactory.cs" />
     <Compile Include="WebDriver\ExampleWebDriver.cs" />
     <Compile Include="WebDriver\Hooks\WebDriverHook.cs" />
