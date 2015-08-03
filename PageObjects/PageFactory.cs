@@ -11,6 +11,20 @@ namespace SpecFlow.Extensions.PageObjects
     {
         private static Dictionary<Type, Page> _pageBag = new Dictionary<Type, Page>();
 
+        public static T Get<T>() where T : Page
+        {
+            if (_pageBag.Keys.Contains(typeof(T)))
+            {
+                return (T)_pageBag[typeof(T)];
+            }
+            else
+            {
+                var page = (T)Activator.CreateInstance<T>();
+                _pageBag.Add(typeof(T), page);
+                return page;
+            }
+        }
+
         public static T Get<T>(IPortalDriver portalDriver) where T : Page
         {
             if (_pageBag.Keys.Contains(typeof(T)))

@@ -29,8 +29,8 @@ namespace SpecFlow.Extensions.Web
 
         public IWebElement GetCheckBoxElement(string text)
         {
-            var checkBoxLabels = _driver.FindElement(_byEx).FindElements(By.TagName("span")).Where(label => !string.IsNullOrEmpty(label.Text)).ToList();
-            var checkBoxElements = _driver.FindElement(_byEx).FindElements(By.TagName("input"));
+            var checkBoxLabels = _element.FindElement(_byEx).FindElements(By.TagName("span")).Where(label => !string.IsNullOrEmpty(label.Text)).ToList();
+            var checkBoxElements = _element.FindElement(_byEx).FindElements(By.TagName("input"));
             if (checkBoxLabels.Count != checkBoxElements.Count)
                 throw new InvalidCastException();
 
