@@ -9,7 +9,7 @@ namespace SpecFlow.Extensions.WebDriver.Hooks
     [Binding]
     public class WebDriverHook
     {
-        static IDriverFactory factory; // TODO = new DriverFactory();
+        static IDriverFactory factory = new ExampleDriverFactory(); // TODO add your own driver factory
         IPortalDriver _portalDriver;
         bool _closeBrowsersAfterScenario = true;
         bool _logoutAfterScenario = true;

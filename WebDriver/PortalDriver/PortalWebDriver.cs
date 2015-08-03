@@ -12,7 +12,7 @@ using System.Threading;
 
 namespace SpecFlow.Extensions.WebDriver.PortalDriver
 {
-    public class PortalWebDriver : WrapWebDriver, IPortalInteract, IWebDriver, IWrapsDriver
+    public abstract class PortalWebDriver : WrapWebDriver, IPortalInteract, IWebDriver, IWrapsDriver
     {
         private readonly int _maxFindAttempts;
 

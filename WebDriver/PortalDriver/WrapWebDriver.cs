@@ -5,7 +5,7 @@ using System.Collections.ObjectModel;
 
 namespace SpecFlow.Extensions.WebDriver.PortalDriver
 {
-    public class WrapWebDriver : IWebDriver, IWrapsDriver
+    public abstract class WrapWebDriver : IWebDriver, IWrapsDriver
     {
         public WrapWebDriver(IWebDriver driver)
         {
