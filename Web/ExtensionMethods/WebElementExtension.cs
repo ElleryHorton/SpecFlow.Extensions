@@ -17,7 +17,7 @@ namespace SpecFlow.Extensions.Web.ExtensionMethods
             return e.GetAttribute("value") ?? string.Empty;
         }
 
-        public static string Text(this SelectElement e)
+        public static string Value(this SelectElement e)
         {
             return e.SelectedOption.Text;
         }

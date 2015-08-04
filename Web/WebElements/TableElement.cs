@@ -9,6 +9,11 @@ namespace SpecFlow.Extensions.Web
 {
     public class TableElement
     {
+        protected IEnumerable<IWebElement> _rows;
+        protected Dictionary<string, int> _headerToIndex = new Dictionary<string, int>();
+
+        public TableElement() { }
+
         public TableElement(IWebElement element)
         {
             MapHeadersToIndex(GetTableHeaders(element));
@@ -70,12 +75,12 @@ namespace SpecFlow.Extensions.Web
 
         public int RowCount
         {
-            get { return _rows.Count; }
+            get { return _rows.Count(); }
         }
 
-        public int RowDataCount
+        virtual public int RowDataCount
         {
-            get { return _rows.Count - 1; }
+            get { return _rows.Count() - 1; }
         }
 
         public int ColumnCount
@@ -83,14 +88,14 @@ namespace SpecFlow.Extensions.Web
             get { return _headerToIndex.Count; }
         }
 
-        public bool CompareToTable(List<string[]> table)
+        public bool CompareToTable(List<string[]> table, int startIndex=1)
         {
             if (table.Count != RowCount)
             {
                 return false;
             }
 
-            for (int row = 1; row < table.Count; row++)
+            for (int row = startIndex; row < table.Count; row++)
             {
                 var colCount = table[row].Count();
                 for (int col = 0; col < colCount; col++)
@@ -106,14 +111,14 @@ namespace SpecFlow.Extensions.Web
             return true;
         }
 
-        public bool CompareToTable(Table table)
+        public bool CompareToTable(Table table, int startIndex=1)
         {
             if (table.Rows.Count != RowDataCount)
             {
                 return false;
             }
 
-            int rowIndex = 1;
+            int rowIndex = startIndex;
             bool isExact = true;
             foreach (var row in table.Rows)
             {
@@ -126,9 +131,6 @@ namespace SpecFlow.Extensions.Web
             }
             return isExact;
         }
-
-        private IReadOnlyCollection<IWebElement> _rows;
-        private Dictionary<string, int> _headerToIndex = new Dictionary<string, int>();
 
         private static IReadOnlyCollection<IWebElement> GetTableHeaders(IWebElement element)
         {

@@ -7,12 +7,13 @@ namespace SpecFlow.Extensions.WebDriver.PortalDriver
 {
     public abstract class WrapWebDriver : IWebDriver, IWrapsDriver
     {
+        private IWebDriver _driver;
         public WrapWebDriver(IWebDriver driver)
         {
             WrappedDriver = driver;
         }
 
-        public IWebDriver WrappedDriver { get; protected set; }
+        public IWebDriver WrappedDriver { get { return (_driver is IWrapsDriver) ? ((IWrapsDriver)_driver).WrappedDriver : _driver; } protected set { _driver = value; } }
 
         /// <summary>
         /// Gets the current window handle, which is an opaque handle to this 

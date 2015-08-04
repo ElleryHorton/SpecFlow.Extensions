@@ -39,7 +39,10 @@ namespace SpecFlow.Extensions.WebDriver.PortalDriver
         public bool ClickChangesUrl(IWebElement element)
         {
             string oldUrl = WrappedDriver.Url;
-            Click(element);
+            if (element.Displayed)
+                Click(element);
+            else
+                ClickInvisible(element);
             WrappedDriver.WaitForUrlToChange(oldUrl, _maxTimeoutMilliseconds);
             return oldUrl != WrappedDriver.Url;
         }

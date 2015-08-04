@@ -164,7 +164,7 @@ namespace SpecFlow.Extensions.Web.ExtensionMethods
 
         private static IEnumerable<IWebElement> FilterElementsByAttributes(IEnumerable<IWebElement> elements, ByEx byEx)
         {
-            return elements.Where(element => byEx.Attributes.All(attribute => element.GetAttribute(attribute.Key) == attribute.Value));
+            return elements.Where(element => byEx.Attributes.All(attribute => byEx.ComparisonMethod(element.GetAttribute(attribute.Key), attribute.Value)));
         }
 
         private static IEnumerable<IWebElement> FindElementsByText(this ISearchContext iFind, ByEx byEx)
@@ -175,7 +175,7 @@ namespace SpecFlow.Extensions.Web.ExtensionMethods
 
         private static IEnumerable<IWebElement> FilterElementsByText(IEnumerable<IWebElement> elements, ByEx byEx)
         {
-            return elements.Where(e => byEx.TextComparisonMethod(e.Text, byEx.Text));
+            return elements.Where(e => byEx.ComparisonMethod(e.Text, byEx.Text));
         }
     }
 }

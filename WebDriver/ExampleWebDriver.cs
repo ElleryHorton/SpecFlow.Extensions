@@ -1,4 +1,7 @@
 ﻿using OpenQA.Selenium;
+using Protractor;
+using SpecFlow.Extensions.PageObjects;
+using SpecFlow.Extensions.Web.ExtensionMethods;
 using SpecFlow.Extensions.WebDriver.PortalDriver;
 
 namespace SpecFlow.Extensions.WebDriver
@@ -27,7 +30,15 @@ namespace SpecFlow.Extensions.WebDriver
             // navigate to the home url of your web portal
         }
         public void NavigateTo(string url) {
-            Navigate().GoToUrl(url);
+            if (WrappedDriver is NgWebDriver && (WrappedDriver.Url == "data:," || WrappedDriver.Url == "about:blank"))
+            {
+                // java script error if there is no page
+                ((NgWebDriver)WrappedDriver).WrappedDriver.Navigate().GoToUrl(url);
+            }
+            else
+            {
+                Navigate().GoToUrl(url);
+            }
         }
     }
 }
