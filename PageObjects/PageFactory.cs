@@ -19,9 +19,9 @@ namespace SpecFlow.Extensions.PageObjects
             }
             else
             {
-                var page = (T)Activator.CreateInstance<T>();
-                _pageBag.Add(typeof(T), page);
-                return page;
+                var newPage = (T)Activator.CreateInstance<T>();
+                _pageBag.Add(typeof(T), newPage);
+                return newPage;
             }
         }
 
@@ -33,9 +33,9 @@ namespace SpecFlow.Extensions.PageObjects
             }
             else
             {
-                var page = (T)Activator.CreateInstance(typeof(T), portalDriver);
-                _pageBag.Add(typeof(T), page);
-                return page;
+                var newPage = (T)Activator.CreateInstance(typeof(T), portalDriver);
+                _pageBag.Add(typeof(T), newPage);
+                return newPage;
             }
         }
     }

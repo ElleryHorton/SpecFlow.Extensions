@@ -28,6 +28,14 @@ namespace SpecFlow.Extensions.WebDriver.PortalDriver
             WrappedDriver.WaitForPageLoad();
         }
 
+        public bool ClickChangesUrl(ByEx byEx)
+        {
+            string oldUrl = WrappedDriver.Url;
+            Click(byEx);
+            WrappedDriver.WaitForUrlToChange(oldUrl, _maxTimeoutMilliseconds);
+            return oldUrl != WrappedDriver.Url;
+        }
+
         public bool ClickChangesUrl(IWebElement element)
         {
             string oldUrl = WrappedDriver.Url;
@@ -41,9 +49,19 @@ namespace SpecFlow.Extensions.WebDriver.PortalDriver
             return WrappedDriver.FindElement(byEx);
         }
 
+        public IWebElement Find(IWebElement element) // support backwards compatibility
+        {
+            return element; // already found by PageObject pattern
+        }
+
         public IEnumerable<IWebElement> FindAll(ByEx byEx)
         {
             return WrappedDriver.FindElements(byEx);
+        }
+
+        public SelectElement FindSelect(ByEx byEx)
+        {
+            return WrappedDriver.FindSelect(byEx);
         }
 
         public SelectElement FindSelect(IWebElement element) // support backwards compatibility
@@ -51,9 +69,23 @@ namespace SpecFlow.Extensions.WebDriver.PortalDriver
             return new SelectElement(element);
         }
 
+        public TableElement FindTable(ByEx byEx)
+        {
+            return WrappedDriver.FindTable(byEx);
+        }
+
         public TableElement FindTable(IWebElement element) // support backwards compatibility
         {
             return new TableElement(element);
+        }
+
+        public void Clear(ByEx byEx)
+        {
+            TryAgain(() =>
+            {
+                Find(byEx).Clear();
+                return true;
+            });
         }
 
         public void Clear(IWebElement element)
@@ -63,6 +95,17 @@ namespace SpecFlow.Extensions.WebDriver.PortalDriver
                 element.Clear();
                 return true;
             });
+        }
+
+        public void Click(ByEx byEx)
+        {
+            TryAgain(() =>
+            {
+                Find(byEx).Click();
+                return true;
+            });
+            WaitForPageLoad();
+
         }
 
         public void Click(IWebElement element)
@@ -76,6 +119,15 @@ namespace SpecFlow.Extensions.WebDriver.PortalDriver
 
         }
 
+        public void ClickInvisible(ByEx byEx)
+        {
+            TryAgain(() =>
+            {
+                ((IJavaScriptExecutor)WrappedDriver).ExecuteScript("arguments[0].Click()", Find(byEx));
+                return true;
+            });
+        }
+
         public void ClickInvisible(IWebElement element)
         {
             TryAgain(() =>
@@ -85,12 +137,25 @@ namespace SpecFlow.Extensions.WebDriver.PortalDriver
             });
         }
 
+        public bool Displayed(ByEx byEx)
+        {
+            return TryAgain(() =>
+            {
+                return Find(byEx).Displayed;
+            });
+        }
+
         public bool Displayed(IWebElement element)
         {
             return TryAgain(() =>
             {
                 return element.Displayed;
             });
+        }
+
+        public bool Exists(ByEx byEx)
+        {
+            return WrappedDriver.HasChild(byEx);
         }
 
         public bool Exists(Func<IWebElement> pageObjectElement)
@@ -108,6 +173,16 @@ namespace SpecFlow.Extensions.WebDriver.PortalDriver
             return exists;
         }
 
+        public void Select(ByEx byEx)
+        {
+            TryAgain(() =>
+            {
+                Find(byEx).Click();
+                WaitForPageLoad();
+                return Find(byEx).Selected;
+            });
+        }
+
         public void Select(IWebElement element)
         {
             TryAgain(() =>
@@ -118,11 +193,31 @@ namespace SpecFlow.Extensions.WebDriver.PortalDriver
             });
         }
 
+        public void SendKeys(ByEx byEx, string text)
+        {
+            TryAgain(() =>
+            {
+                Find(byEx).SendKeys(text);
+                return true;
+            });
+        }
+
         public void SendKeys(IWebElement element, string text)
         {
             TryAgain(() =>
             {
                 element.SendKeys(text);
+                return true;
+            });
+        }
+
+        public void Type(ByEx byEx, string text)
+        {
+            TryAgain(() =>
+            {
+                Find(byEx).Click();
+                Find(byEx).Clear();
+                Find(byEx).SendKeys(text);
                 return true;
             });
         }
@@ -159,7 +254,7 @@ namespace SpecFlow.Extensions.WebDriver.PortalDriver
                 {
                     Thread.Sleep(1000);
                 }
-                }
+            }
 
             if (!success && lastException != null)
             {
