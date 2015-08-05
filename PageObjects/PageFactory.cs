@@ -1,5 +1,4 @@
-﻿using Ipreo.Common.Tests.Automation.UI.Pages;
-using SpecFlow.Extensions.WebDriver.PortalDriver;
+﻿using SpecFlow.Extensions.WebDriver.PortalDriver;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -16,7 +15,7 @@ namespace SpecFlow.Extensions.PageObjects
         public static Page GetPage(string pageName)
         {
             Type pageType = AppDomain.CurrentDomain.GetAssemblies()
-                .Where(assembly => assembly.IsDefined(typeof(ContainPagesAttribute)))
+                .Where(assembly => assembly.IsDefined(typeof(AssemblyContainsPagesAttribute)))
                 .SelectMany(assembly => assembly.GetTypes())
                 .FirstOrDefault(type => type.IsDefined(typeof(PageAttribute)) && type.GetCustomAttribute<PageAttribute>().Name == pageName);
             if (pageType != null)

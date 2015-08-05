@@ -6,7 +6,7 @@ using System;
 
 namespace SpecFlow.Extensions.PageObjects
 {
-    public class Page
+    public abstract class Page
     {
         public static IDriverFactory DriverFactory;
 

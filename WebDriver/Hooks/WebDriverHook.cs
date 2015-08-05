@@ -9,21 +9,21 @@ namespace SpecFlow.Extensions.WebDriver.Hooks
     [Binding]
     public class WebDriverHook
     {
-        static IDriverFactory factory = new ExampleDriverFactory(); // TODO add your own driver factory
-        IPortalDriver _portalDriver;
-        bool _closeBrowsersAfterScenario = true;
-        bool _logoutAfterScenario = true;
+        private static IDriverFactory factory = new ExampleDriverFactory(); // TODO add your own driver factory
+        private IWebDriver _driver;
+        private bool _closeBrowsersAfterScenario = true;
+        private bool _logoutAfterScenario = true;
 
         public WebDriverHook(WebContext webContext)
         {
             Page.DriverFactory = factory;
             webContext.PortalDriver = factory.GetDriver();
-            _portalDriver = webContext.PortalDriver;
+            _driver = (IWebDriver)webContext.PortalDriver;
         }
 
         private void SetDefaultBrowserSize()
         {
-            _portalDriver.WrappedDriver.Manage().Window.Size = new System.Drawing.Size(1024, 768);
+            _driver.Manage().Window.Size = new System.Drawing.Size(1024, 768);
         }
 
         [BeforeScenario("web")]
@@ -35,7 +35,7 @@ namespace SpecFlow.Extensions.WebDriver.Hooks
         [BeforeScenario("web_max")]
         public void BeforeScenarioWebMax()
         {
-            _portalDriver.WrappedDriver.Manage().Window.Maximize();
+            _driver.Manage().Window.Maximize();
         }
 
         [BeforeScenario("web_persist")] // enable reuse of browsers
@@ -56,7 +56,7 @@ namespace SpecFlow.Extensions.WebDriver.Hooks
         [BeforeScenario("web_small")]
         public void BeforeScenarioWebSmall()
         {
-            _portalDriver.WrappedDriver.Manage().Window.Size = new System.Drawing.Size(500, 500);
+            _driver.Manage().Window.Size = new System.Drawing.Size(500, 500);
         }
 
         // TODO list all scenario web hooks here
