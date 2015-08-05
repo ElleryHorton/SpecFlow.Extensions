@@ -1,36 +1,24 @@
 ﻿using OpenQA.Selenium;
 using SpecFlow.Extensions.Web.ExtensionMethods;
 using System;
-using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace SpecFlow.Extensions.Web
 {
     public class CheckListElement
     {
-        private ByEx _byEx;
-        private IWebElement _element;
+        private ByEx _id;
         private IWebDriver _driver;
-
-        public CheckListElement(ByEx byEx, IWebDriver driver)
+        public CheckListElement(ByEx id, IWebDriver driver)
         {
-            _byEx = byEx;
-            _element = _driver.FindElement(_byEx);
-            _driver = driver;
-        }
-
-        public CheckListElement(IWebElement element, IWebDriver driver)
-        {
-            _element = element;
+            _id = id;
             _driver = driver;
         }
 
         public IWebElement GetCheckBoxElement(string text)
         {
-            var checkBoxLabels = _element.FindElement(_byEx).FindElements(By.TagName("span")).Where(label => !string.IsNullOrEmpty(label.Text)).ToList();
-            var checkBoxElements = _element.FindElement(_byEx).FindElements(By.TagName("input"));
+            var checkBoxLabels = _driver.FindElement(_id).FindElements(By.TagName("span"));
+            var checkBoxElements = _driver.FindElement(_id).FindElements(By.TagName("input"));
             if (checkBoxLabels.Count != checkBoxElements.Count)
                 throw new InvalidCastException();
 
