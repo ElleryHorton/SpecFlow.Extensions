@@ -1,5 +1,6 @@
 ﻿using OpenQA.Selenium;
 using OpenQA.Selenium.Support.UI;
+using SpecFlow.Extensions.Web.ByWrappers;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -10,6 +11,14 @@ namespace SpecFlow.Extensions.Web.ExtensionMethods
     public static class ISearchContextExtension
     {
         private const int MAX_RETRIES = 3;
+        private enum ByTypes { ByEx, ByAttribute, ByColumns, ByText };
+        private static IReadOnlyDictionary<Type, ByTypes> types = new Dictionary<Type, ByTypes>
+        {
+            {typeof(ByEx), ByTypes.ByEx},
+            {typeof(ByAttribute), ByTypes.ByAttribute},
+            {typeof(ByColumns), ByTypes.ByColumns},
+            {typeof(ByText), ByTypes.ByText}
+        };
 
         public static bool HasChild(this ISearchContext iFind, ByEx byEx)
         {
@@ -23,7 +32,7 @@ namespace SpecFlow.Extensions.Web.ExtensionMethods
             int tryCount = 0;
             while ((tryCount < MAX_RETRIES) && e == null)
             {
-                e = SelectFindMethod(iFind, byEx, e);
+                e = FindMethod(iFind, byEx);
 
                 tryCount++;
                 if (e == null)
@@ -34,7 +43,7 @@ namespace SpecFlow.Extensions.Web.ExtensionMethods
 
             if (e == null) // fail normally with built-in FindElement
             {
-                if (byEx.hasText || byEx.hasAttributes) // default FindElement(By) won't find it
+                if (byEx is ByText || byEx is ByAttribute) // default FindElement(By) won't find it
                 {
                     throw new NoSuchElementException();
                 }
@@ -51,11 +60,11 @@ namespace SpecFlow.Extensions.Web.ExtensionMethods
 
         private static IEnumerable<IWebElement> FindAll(this ISearchContext iFind, ByEx byEx, int retries, int milliseconds)
         {
-            var elements = SelectFindAllMethod(iFind, byEx);
+            var elements = FindAllMethod(iFind, byEx);
             while ((retries > 0) && elements.Count() == 0)
             {
                 Thread.Sleep(milliseconds);
-                elements = SelectFindAllMethod(iFind, byEx);
+                elements = FindAllMethod(iFind, byEx);
                 retries--;
             }
             return elements;
@@ -63,23 +72,7 @@ namespace SpecFlow.Extensions.Web.ExtensionMethods
 
         public static IWebElement FindElementOrNull(this ISearchContext iFind, ByEx byEx)
         {
-            try
-            {
-                IEnumerable<IWebElement> elements = byEx.isVisible ? iFind.FindElements(byEx.By).Where(e => e.Displayed) : iFind.FindElements(byEx.By);
-                if (byEx.hasText && elements.Count() > 0)
-                {
-                    elements = FilterElementsByText(elements, byEx);
-                }
-                if (byEx.hasAttributes && elements.Count() > 0)
-                {
-                    elements = FilterElementsByAttributes(elements, byEx);
-                }
-                return elements.FirstOrDefault();
-            }
-            catch
-            {
-                return null;
-            }
+            return FindElements(iFind, byEx).FirstOrDefault();
         }
 
         public static SelectElement FindSelect(this ISearchContext iFind, ByEx byEx)
@@ -101,79 +94,50 @@ namespace SpecFlow.Extensions.Web.ExtensionMethods
             return new TableElement(iFind.FindElement(byEx));
         }
 
-
-        private static IWebElement SelectFindMethod(ISearchContext iFind, ByEx byEx, IWebElement e)
+        private static IWebElement FindMethod(ISearchContext iFind, ByEx byEx)
         {
-            if (byEx.hasText)
+            switch (types[byEx.GetType()])
             {
-                e = iFind.FindElementByText(byEx);
+                case ByTypes.ByAttribute:
+                    return FindElementsByAttributes(iFind, (ByAttribute)byEx).FirstOrDefault();
+                case ByTypes.ByText:
+                    return FindElementsByText(iFind, (ByText)byEx).FirstOrDefault();
+                default:
+                    return iFind.FindElements(byEx.By).FirstOrDefault();
             }
-            else if (byEx.hasAttributes)
-            {
-                e = iFind.FindElementByAttributes(byEx);
-            }
-            else
-            {
-                e = iFind.FindElementOrNull(byEx);
-            }
-            return e;
         }
 
-        private static IWebElement FindElementByAttributes(this ISearchContext iFind, ByEx byEx)
+        private static IEnumerable<IWebElement> FindAllMethod(ISearchContext iFind, ByEx byEx)
         {
-            return FirstElementOrThrowNoSuchElementException(iFind.FindElementsByAttributes(byEx));
+            switch (types[byEx.GetType()])
+            {
+                case ByTypes.ByAttribute:
+                    return FindElementsByAttributes(iFind, (ByAttribute)byEx);
+                case ByTypes.ByText:
+                    return FindElementsByText(iFind, (ByText)byEx);
+                default:
+                    return iFind.FindElements(byEx.By);
+            }
         }
 
-        private static IWebElement FindElementByText(this ISearchContext iFind, ByEx byEx)
-        {
-            return FirstElementOrThrowNoSuchElementException(iFind.FindElementsByText(byEx));
-        }
-
-        private static IWebElement FirstElementOrThrowNoSuchElementException(IEnumerable<IWebElement> list)
-        {
-            if (list.Count() == 0)
-            {
-                throw new NoSuchElementException();
-            }
-            return list.First();
-        }
-
-        private static IEnumerable<IWebElement> SelectFindAllMethod(ISearchContext iFind, ByEx byEx)
-        {
-            IEnumerable<IWebElement> elements = null;
-            if (byEx.hasText)
-            {
-                elements = iFind.FindElementsByText(byEx);
-            }
-            else if (byEx.hasAttributes)
-            {
-                elements = iFind.FindElementsByAttributes(byEx);
-            }
-            else
-            {
-                elements = iFind.FindElements(byEx.By);
-            }
-            return elements;
-        }
-
-        private static IEnumerable<IWebElement> FindElementsByAttributes(this ISearchContext iFind, ByEx byEx)
+        private static IEnumerable<IWebElement> FindElementsByAttributes(this ISearchContext iFind, ByAttribute byEx)
         {
             var elements = byEx.isVisible ? iFind.FindElements(byEx.By).Where(e => e.Displayed) : iFind.FindElements(byEx.By);
             return FilterElementsByAttributes(elements, byEx);
         }
 
-        private static IEnumerable<IWebElement> FilterElementsByAttributes(IEnumerable<IWebElement> elements, ByEx byEx)
+        private static IEnumerable<IWebElement> FilterElementsByAttributes(IEnumerable<IWebElement> elements, ByAttribute byEx)
         {
             return elements.Where(element => byEx.Attributes.All(attribute => byEx.ComparisonMethod(element.GetAttribute(attribute.Key), attribute.Value)));
         }
 
-        private static IEnumerable<IWebElement> FindElementsByText(this ISearchContext iFind, ByEx byEx)
+        private static IEnumerable<IWebElement> FindElementsByText(this ISearchContext iFind, ByText byEx)
         {
             var elements = byEx.isVisible ? iFind.FindElements(byEx.By).Where(e => e.Displayed) : iFind.FindElements(byEx.By);
             return FilterElementsByText(elements, byEx);
         }
 
-        private static IEnumerable<IWebElement> FilterElementsByText(IEnumerable<IWebElement> elements, ByEx byEx)
+        private static IEnumerable<IWebElement> FilterElementsByText(IEnumerable<IWebElement> elements, ByText byEx)
         {
             return elements.Where(e => byEx.ComparisonMethod(e.Text, byEx.Text));
         }

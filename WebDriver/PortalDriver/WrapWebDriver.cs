@@ -1,5 +1,6 @@
 ﻿using OpenQA.Selenium;
 using OpenQA.Selenium.Internal;
+using SpecFlow.Extensions.Web.ByWrappers;
 using SpecFlow.Extensions.Web.ExtensionMethods;
 using System.Collections.ObjectModel;
 

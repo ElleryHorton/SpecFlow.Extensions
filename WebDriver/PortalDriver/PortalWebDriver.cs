@@ -3,6 +3,7 @@ using OpenQA.Selenium;
 using OpenQA.Selenium.Internal;
 using OpenQA.Selenium.Support.UI;
 using SpecFlow.Extensions.Web;
+using SpecFlow.Extensions.Web.ByWrappers;
 using SpecFlow.Extensions.Web.ExtensionMethods;
 using System;
 using System.Collections.Generic;

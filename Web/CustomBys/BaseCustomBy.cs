@@ -4,6 +4,7 @@ using System.Linq;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using SpecFlow.Extensions.Web.ExtensionMethods;
+using SpecFlow.Extensions.Web.ByWrappers;
 
 namespace SpecFlow.Extensions.Web.CustomBys
 {
@@ -44,7 +45,7 @@ namespace SpecFlow.Extensions.Web.CustomBys
         public BaseText(Func<string, By> activator, string usingString) : base(activator)
         {
             var tokens = TokenizeUsing(usingString, 2);
-            SetFindMethods(new ByEx(byActivator(tokens[0]), tokens[1]));
+            SetFindMethods(new ByText(byActivator(tokens[0]), tokens[1]));
         }
     }
 
@@ -53,7 +54,7 @@ namespace SpecFlow.Extensions.Web.CustomBys
         public BaseTextPartial(Func<string, By> activator, string usingString) : base(activator)
         {
             var tokens = TokenizeUsing(usingString, 2);
-            SetFindMethods(new ByEx(byActivator(tokens[0]), tokens[1], (string search, string find) => (search.Contains(find))));
+            SetFindMethods(new ByText(byActivator(tokens[0]), tokens[1], (string search, string find) => (search.Contains(find))));
         }
 
     }
@@ -63,7 +64,7 @@ namespace SpecFlow.Extensions.Web.CustomBys
         public BaseAttribute(Func<string, By> activator, string usingString) : base(activator)
         {
             var tokens = TokenizeUsing(usingString, 3);
-            SetFindMethods(new ByEx(byActivator(tokens[0]), tokens[1], tokens[2]));
+            SetFindMethods(new ByAttribute(byActivator(tokens[0]), tokens[1], tokens[2]));
         }
     }
 

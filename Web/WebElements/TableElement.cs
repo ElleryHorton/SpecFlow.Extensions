@@ -1,4 +1,5 @@
 ﻿using OpenQA.Selenium;
+using SpecFlow.Extensions.Web.ByWrappers;
 using SpecFlow.Extensions.Web.ExtensionMethods;
 using System;
 using System.Collections.Generic;
@@ -39,12 +40,12 @@ namespace SpecFlow.Extensions.Web
         {
             foreach (var row in _rows)
             {
-                var e = row.FindElementOrNull(new ByEx(By.TagName("th"), text, ComparisonMethod));
+                var e = row.FindElementOrNull(new ByText(By.TagName("th"), text, ComparisonMethod));
                 if (e != null)
                 {
                     return e;
                 }
-                e = row.FindElementOrNull(new ByEx(By.TagName("td"), text, ComparisonMethod));
+                e = row.FindElementOrNull(new ByText(By.TagName("td"), text, ComparisonMethod));
                 if (e != null)
                 {
                     return e;
@@ -57,13 +58,13 @@ namespace SpecFlow.Extensions.Web
         {
             foreach (var row in _rows)
             {
-                var byEx = new ByEx(By.TagName("th"), text, ComparisonMethod);
+                var byEx = new ByText(By.TagName("th"), text, ComparisonMethod);
                 var e = row.FindElementOrNull(byEx);
                 if (e != null)
                 {
                     return byEx;
                 }
-                byEx = new ByEx(By.TagName("td"), text, ComparisonMethod);
+                byEx = new ByText(By.TagName("td"), text, ComparisonMethod);
                 e = row.FindElementOrNull(byEx);
                 if (e != null)
                 {
