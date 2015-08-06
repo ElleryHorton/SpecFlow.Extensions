@@ -10,6 +10,6 @@ namespace SpecFlow.Extensions.WebDriver.PortalDriver
         void Login();
         void Logout();
         void NavigateHome();
-        void NavigateTo(string url);
+        void NavigateTo(string pageName, string pageExtension = "");
     }
 }

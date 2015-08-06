@@ -19,5 +19,15 @@ namespace SpecFlow.Extensions.PageObjects
             IElementLocator retryingLocator = new RetryingElementLocator(WebDriver, TimeSpan.FromSeconds(5));
             OpenQA.Selenium.Support.PageObjects.PageFactory.InitElements(this, retryingLocator);
         }
+
+		public string Uri
+        {
+            get
+            {
+                var assembly = System.Reflection.Assembly.GetExecutingAssembly().ManifestModule.Name;
+                assembly = assembly.Substring(0, assembly.Length - ".dll".Length);
+                return GetType().FullName.Replace(assembly, string.Empty).Replace(".", @"/");
+            }
+        }
     }
 }

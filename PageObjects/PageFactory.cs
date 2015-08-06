@@ -17,7 +17,7 @@ namespace SpecFlow.Extensions.PageObjects
             Type pageType = AppDomain.CurrentDomain.GetAssemblies()
                 .Where(assembly => assembly.IsDefined(typeof(AssemblyContainsPagesAttribute)))
                 .SelectMany(assembly => assembly.GetTypes())
-                .FirstOrDefault(type => type.IsDefined(typeof(PageAttribute)) && type.GetCustomAttribute<PageAttribute>().Name == pageName);
+                .FirstOrDefault(type => type.FullName.EndsWith(pageName));
             if (pageType != null)
             {
                 if (_pageBag.Keys.Contains(pageType))

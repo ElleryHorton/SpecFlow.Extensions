@@ -29,7 +29,9 @@ namespace SpecFlow.Extensions.WebDriver
         {
             // navigate to the home url of your web portal
         }
-        public void NavigateTo(string url) {
+        public void NavigateTo(string pageName, string pageExtension = "")
+        {
+            string url = GetUrl(pageName) + pageExtension;
             if (WrappedDriver is NgWebDriver && (WrappedDriver.Url == "data:," || WrappedDriver.Url == "about:blank"))
             {
                 // java script error if there is no page
@@ -39,6 +41,14 @@ namespace SpecFlow.Extensions.WebDriver
             {
                 Navigate().GoToUrl(url);
             }
+        }
+		private string GetUrl(string pageName)
+        {
+            return GetBaseUrl("LOCAL") + PageFactory.GetPage(pageName).Uri;
+        }
+        private string GetBaseUrl(string environmentName)
+        {
+            return string.Empty; // TODO add your base url
         }
     }
 }

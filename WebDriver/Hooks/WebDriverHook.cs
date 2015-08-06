@@ -42,7 +42,6 @@ namespace SpecFlow.Extensions.WebDriver.Hooks
         public void BeforeScenarioWebPersist()
         {
             _closeBrowsersAfterScenario = false;
-            SetDefaultBrowserSize();
         }
 
         [BeforeScenario("web_persistLogin")] // enable reuse of logged in session
@@ -50,7 +49,6 @@ namespace SpecFlow.Extensions.WebDriver.Hooks
         {
             _closeBrowsersAfterScenario = false;
             _logoutAfterScenario = false;
-            SetDefaultBrowserSize();
         }
 
         [BeforeScenario("web_small")]
