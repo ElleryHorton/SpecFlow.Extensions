@@ -49,6 +49,7 @@ namespace SpecFlow.Extensions.Database
             }
             return string.Empty;
         }
+
         private string BuildOnParameters(List<SQL> onParameters)
         {
             if (onParameters != null)
@@ -153,7 +154,7 @@ namespace SpecFlow.Extensions.Database
             {
                 whereParameters = string.Format(" WHERE {0}", whereParameters);
             }
-            
+
             return string.Format("DELETE FROM {0}{1}", tableName, whereParameters);
         }
 

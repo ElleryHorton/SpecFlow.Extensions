@@ -1,7 +1,7 @@
 ﻿using NUnit.Framework;
 using System;
-using System.Linq;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace SpecFlow.Extensions.Framework.ExtensionMethods
 {
@@ -15,7 +15,6 @@ namespace SpecFlow.Extensions.Framework.ExtensionMethods
             StringRandomize.FeatureHash = string.Empty;
             StringRandomize.ScenarioHash = string.Empty;
         }
-
 
         [Test]
         public void StringExtensionCreatesHash()
@@ -87,9 +86,6 @@ namespace SpecFlow.Extensions.Framework.ExtensionMethods
             StringRandomize.ScenarioHash = string.Empty;
 
             Assert.IsTrue(temp.Randomize().StartsWith(string.Format("temp-{0}-", tester)));
-            
-
-                        
         }
     }
 }

@@ -3,8 +3,6 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace SpecFlow.Extensions.PageObjects
 {
@@ -15,7 +13,7 @@ namespace SpecFlow.Extensions.PageObjects
         public static Page GetPage(string pageName)
         {
             Type pageType = AppDomain.CurrentDomain.GetAssemblies()
-                .Where(assembly => assembly.IsDefined(typeof(AssemblyContainsPagesAttribute)))
+                .Where(assembly => assembly.IsDefined(typeof(AssemblyContainsPages)))
                 .SelectMany(assembly => assembly.GetTypes())
                 .FirstOrDefault(type => type.FullName.EndsWith(pageName));
             if (pageType != null)

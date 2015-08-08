@@ -17,5 +17,10 @@ namespace SpecFlow.Extensions.Framework.Helpers
                 return testers[testers.ContainsKey(machineName) ? machineName : "DEFAULT"]["Email"];
             }
         }
+
+        public static string TestDataPath(string testDataName)
+        {
+            return string.Format("{0}{1}{2}", Environment.CurrentDirectory, @"\testdata\", testDataName);
+        }
     }
 }

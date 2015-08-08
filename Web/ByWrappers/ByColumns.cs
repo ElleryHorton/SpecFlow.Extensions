@@ -1,5 +1,4 @@
 ﻿using OpenQA.Selenium;
-using System.Collections.Generic;
 
 namespace SpecFlow.Extensions.Web.ByWrappers
 {
@@ -7,7 +6,8 @@ namespace SpecFlow.Extensions.Web.ByWrappers
     {
         public string[] Columns = null;
 
-        public ByColumns(By by, string[] columnHeaders, bool visibleOnly = true) : base(by, visibleOnly)
+        public ByColumns(By by, string[] columnHeaders, Input input = Input.Type, bool visibleOnly = true)
+            : base(by, input, visibleOnly)
         {
             Columns = columnHeaders;
         }

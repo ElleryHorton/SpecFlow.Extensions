@@ -3,20 +3,22 @@ using OpenQA.Selenium.Chrome;
 using OpenQA.Selenium.IE;
 using Protractor;
 using SpecFlow.Extensions.WebDriver.PortalDriver;
-using System.Linq;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace SpecFlow.Extensions.WebDriver
 {
     /*
      * TODO I am an example only, I am in no way complete or correct
      */
+
     public class ExampleDriverFactory : IDriverFactory
     {
         public enum DriverTypes
         {
             IE, Chrome
         }
+
         private static List<IPortalDriver> _driverBag = new List<IPortalDriver>();
 
         public IPortalDriver GetDriver()
@@ -35,7 +37,10 @@ namespace SpecFlow.Extensions.WebDriver
         }
 
         // TODO randomize the driver every few hours to keep testers on their toes :)
-        private IWebDriver GetDriverRandom() { return GetDriver(DriverTypes.Chrome); }
+        private IWebDriver GetDriverRandom()
+        {
+            return GetDriver(DriverTypes.Chrome);
+        }
 
         private IWebDriver GetDriver(DriverTypes type)
         {
@@ -54,6 +59,7 @@ namespace SpecFlow.Extensions.WebDriver
                         });
                     driver = new NgWebDriver(driver);
                     break;
+
                 case DriverTypes.Chrome:
                     ChromeOptions options = new ChromeOptions();
                     options.AddArgument("--disable-plugins");
@@ -69,10 +75,12 @@ namespace SpecFlow.Extensions.WebDriver
         {
             _driverBag.ForEach(driver => driver.NavigateHome());
         }
+
         public void LogoutBrowsers()
         {
             _driverBag.ForEach(driver => driver.Logout());
         }
+
         public void CloseBrowsers()
         {
             // local user could have closed the browser or killed the driver process
@@ -82,7 +90,6 @@ namespace SpecFlow.Extensions.WebDriver
             }
             catch
             {
-
             }
 
             // local user could have closed the browser or killed the driver process
@@ -92,7 +99,6 @@ namespace SpecFlow.Extensions.WebDriver
             }
             catch
             {
-
             }
 
             _driverBag.Clear();

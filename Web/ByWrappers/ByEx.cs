@@ -4,13 +4,15 @@ namespace SpecFlow.Extensions.Web.ByWrappers
 {
     public class ByEx
     {
-        public By By;       
+        public By By;
         public bool isVisible;
+        public Input Input;
 
-        public ByEx(By by, bool visibleOnly = true)
+        public ByEx(By by, Input input = Input.Type, bool visibleOnly = true)
         {
-            By = by; 
+            By = by;
             isVisible = visibleOnly;
+            Input = input;
         }
     }
 }

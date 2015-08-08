@@ -7,29 +7,34 @@ namespace SpecFlow.Extensions.Web.ByWrappers
     public class ByAttribute : ByEx
     {
         public Dictionary<string, string> Attributes { get; private set; }
+
         public Func<string, string, bool> ComparisonMethod;
+
         public bool hasAttributes { get { return (Attributes == null) ? false : Attributes.Count > 0; } }
-        
-        public ByAttribute(By by, string attributeName, string attributeValue, bool visibleOnly = true) : this(by, attributeName, attributeValue, string.Equals, visibleOnly)
+
+        public ByAttribute(By by, string attributeName, string attributeValue, Input input = Input.Type, bool visibleOnly = true)
+            : this(by, attributeName, attributeValue, string.Equals, input, visibleOnly)
         {
         }
 
-        public ByAttribute(By by, string attributeName, string attributeValue, Func<string, string, bool> attrComparisonMethod, bool visibleOnly = true) : base(by, visibleOnly)
+        public ByAttribute(By by, string attributeName, string attributeValue, Func<string, string, bool> attrComparisonMethod, Input input = Input.Type, bool visibleOnly = true)
+            : base(by, input, visibleOnly)
         {
             Attributes = new Dictionary<string, string>();
             Attributes.Add(attributeName, attributeValue);
             ComparisonMethod = attrComparisonMethod;
         }
 
-        public ByAttribute(By by, Dictionary<string, string> attr, bool visibleOnly = true) : this(by, attr, string.Equals, visibleOnly)
+        public ByAttribute(By by, Dictionary<string, string> attr, Input input = Input.Type, bool visibleOnly = true)
+            : this(by, attr, string.Equals, input, visibleOnly)
         {
         }
 
-        public ByAttribute(By by, Dictionary<string, string> attr, Func<string, string, bool> attrComparisonMethod, bool visibleOnly = true) : this(by, attr, visibleOnly)
+        public ByAttribute(By by, Dictionary<string, string> attr, Func<string, string, bool> attrComparisonMethod, Input input = Input.Type, bool visibleOnly = true)
+            : this(by, attr, input, visibleOnly)
         {
             Attributes = attr ?? new Dictionary<string, string>();
             ComparisonMethod = attrComparisonMethod;
         }
-
     }
 }

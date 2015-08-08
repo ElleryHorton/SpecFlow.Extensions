@@ -8,10 +8,10 @@ namespace SpecFlow.Extensions.Framework.ExtensionMethods
         private static Random _random = new Random();
 
         public static string FeatureHash { get; set; }
+
         public static string ScenarioHash { get; set; }
 
         public static string TesterHash { get; set; }
-
 
         public static string Randomize(this string original, int hashLength = 4, string hashDelimit = "-")
         {

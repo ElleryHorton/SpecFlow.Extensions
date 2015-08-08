@@ -31,7 +31,7 @@ namespace SpecFlow.Extensions.Web.ExtensionMethods
             int time_current = 0;
 
             var e = driver.FindElementOrNull(byEx);
-            while ( (time_current < TIME_MAX) && e == null )
+            while ((time_current < TIME_MAX) && e == null)
             {
                 Thread.Sleep(1000);
                 time_current++;

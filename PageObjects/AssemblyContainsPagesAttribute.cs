@@ -2,7 +2,7 @@
 
 namespace SpecFlow.Extensions.PageObjects
 {
-    public class AssemblyContainsPagesAttribute : Attribute
+    public class AssemblyContainsPages : Attribute
     {
     }
 }

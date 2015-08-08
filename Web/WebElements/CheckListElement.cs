@@ -10,6 +10,7 @@ namespace SpecFlow.Extensions.Web
     {
         private ByEx _id;
         private IWebDriver _driver;
+
         public CheckListElement(ByEx id, IWebDriver driver)
         {
             _id = id;

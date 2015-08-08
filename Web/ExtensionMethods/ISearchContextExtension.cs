@@ -11,7 +11,9 @@ namespace SpecFlow.Extensions.Web.ExtensionMethods
     public static class ISearchContextExtension
     {
         private const int MAX_RETRIES = 3;
+
         private enum ByTypes { ByEx, ByAttribute, ByColumns, ByText };
+
         private static IReadOnlyDictionary<Type, ByTypes> types = new Dictionary<Type, ByTypes>
         {
             {typeof(ByEx), ByTypes.ByEx},
@@ -58,7 +60,7 @@ namespace SpecFlow.Extensions.Web.ExtensionMethods
             return FindAll(iFind, byEx, MAX_RETRIES, 2000);
         }
 
-        private static IEnumerable<IWebElement> FindAll(this ISearchContext iFind, ByEx byEx, int retries, int milliseconds)
+        private static IEnumerable<IWebElement> FindAll(ISearchContext iFind, ByEx byEx, int retries, int milliseconds)
         {
             var elements = FindAllMethod(iFind, byEx);
             while ((retries > 0) && elements.Count() == 0)
@@ -96,48 +98,47 @@ namespace SpecFlow.Extensions.Web.ExtensionMethods
 
         private static IWebElement FindMethod(ISearchContext iFind, ByEx byEx)
         {
+            var elements = FilterElementsByVisibility(iFind, byEx);
             switch (types[byEx.GetType()])
             {
                 case ByTypes.ByAttribute:
-                    return FindElementsByAttributes(iFind, (ByAttribute)byEx).FirstOrDefault();
+                    return FilterElementsByAttributes(iFind, elements, (ByAttribute)byEx).FirstOrDefault();
+
                 case ByTypes.ByText:
-                    return FindElementsByText(iFind, (ByText)byEx).FirstOrDefault();
+                    return FilterElementsByText(iFind, elements, (ByText)byEx).FirstOrDefault();
+
                 default:
-                    return iFind.FindElements(byEx.By).FirstOrDefault();
+                    return elements.FirstOrDefault();
             }
         }
 
         private static IEnumerable<IWebElement> FindAllMethod(ISearchContext iFind, ByEx byEx)
         {
+            var elements = FilterElementsByVisibility(iFind, byEx);
             switch (types[byEx.GetType()])
             {
                 case ByTypes.ByAttribute:
-                    return FindElementsByAttributes(iFind, (ByAttribute)byEx);
+                    return FilterElementsByAttributes(iFind, elements, (ByAttribute)byEx);
+
                 case ByTypes.ByText:
-                    return FindElementsByText(iFind, (ByText)byEx);
+                    return FilterElementsByText(iFind, elements, (ByText)byEx);
+
                 default:
-                    return iFind.FindElements(byEx.By);
+                    return elements;
             }
         }
 
-        private static IEnumerable<IWebElement> FindElementsByAttributes(this ISearchContext iFind, ByAttribute byEx)
+        private static IEnumerable<IWebElement> FilterElementsByVisibility(ISearchContext iFind, ByEx byEx)
         {
-            var elements = byEx.isVisible ? iFind.FindElements(byEx.By).Where(e => e.Displayed) : iFind.FindElements(byEx.By);
-            return FilterElementsByAttributes(elements, byEx);
+            return byEx.isVisible ? iFind.FindElements(byEx.By).Where(e => e.Displayed) : iFind.FindElements(byEx.By);
         }
 
-        private static IEnumerable<IWebElement> FilterElementsByAttributes(IEnumerable<IWebElement> elements, ByAttribute byEx)
+        private static IEnumerable<IWebElement> FilterElementsByAttributes(ISearchContext iFind, IEnumerable<IWebElement> elements, ByAttribute byEx)
         {
             return elements.Where(element => byEx.Attributes.All(attribute => byEx.ComparisonMethod(element.GetAttribute(attribute.Key), attribute.Value)));
         }
 
-        private static IEnumerable<IWebElement> FindElementsByText(this ISearchContext iFind, ByText byEx)
-        {
-            var elements = byEx.isVisible ? iFind.FindElements(byEx.By).Where(e => e.Displayed) : iFind.FindElements(byEx.By);
-            return FilterElementsByText(elements, byEx);
-        }
-
-        private static IEnumerable<IWebElement> FilterElementsByText(IEnumerable<IWebElement> elements, ByText byEx)
+        private static IEnumerable<IWebElement> FilterElementsByText(ISearchContext iFind, IEnumerable<IWebElement> elements, ByText byEx)
         {
             return elements.Where(e => byEx.ComparisonMethod(e.Text, byEx.Text));
         }

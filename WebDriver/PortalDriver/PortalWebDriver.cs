@@ -1,5 +1,4 @@
-﻿using Newtonsoft.Json;
-using OpenQA.Selenium;
+﻿using OpenQA.Selenium;
 using OpenQA.Selenium.Internal;
 using OpenQA.Selenium.Support.UI;
 using SpecFlow.Extensions.Web;
@@ -7,8 +6,6 @@ using SpecFlow.Extensions.Web.ByWrappers;
 using SpecFlow.Extensions.Web.ExtensionMethods;
 using System;
 using System.Collections.Generic;
-using System.Collections.ObjectModel;
-using System.IO;
 using System.Threading;
 
 namespace SpecFlow.Extensions.WebDriver.PortalDriver
@@ -18,12 +15,13 @@ namespace SpecFlow.Extensions.WebDriver.PortalDriver
         private readonly int _maxFindAttempts;
         private readonly int _maxTimeoutMilliseconds;
 
-        public PortalWebDriver(IWebDriver driver, int maxFindAttempts = 3, int maxTimeoutMilliseconds = 2000) : base(driver)
+        public PortalWebDriver(IWebDriver driver, int maxFindAttempts = 3, int maxTimeoutMilliseconds = 2000)
+            : base(driver)
         {
             _maxFindAttempts = maxFindAttempts;
             _maxTimeoutMilliseconds = maxTimeoutMilliseconds;
         }
-        
+
         public void WaitForPageLoad()
         {
             WrappedDriver.WaitForPageLoad();
@@ -109,7 +107,6 @@ namespace SpecFlow.Extensions.WebDriver.PortalDriver
                 return true;
             });
             WaitForPageLoad();
-
         }
 
         public void Click(IWebElement element)
@@ -120,7 +117,6 @@ namespace SpecFlow.Extensions.WebDriver.PortalDriver
                 return true;
             });
             WaitForPageLoad();
-
         }
 
         public void ClickInvisible(ByEx byEx)
@@ -235,6 +231,29 @@ namespace SpecFlow.Extensions.WebDriver.PortalDriver
                 element.SendKeys(text);
                 return true;
             });
+        }
+
+        public void Set(ByEx byEx, string text)
+        {
+            switch (byEx.Input)
+            {
+                case Input.Click:
+                    Click(byEx);
+                    break;
+
+                case Input.Select:
+                    FindSelect(byEx).SelectByText(text);
+                    break;
+
+                case Input.SendKeys:
+                case Input.Upload:
+                    SendKeys(byEx, text);
+                    break;
+
+                case Input.Type:
+                    Type(byEx, text);
+                    break;
+            }
         }
 
         private bool TryAgain(Func<bool> func)

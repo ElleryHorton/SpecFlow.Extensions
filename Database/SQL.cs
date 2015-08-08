@@ -17,7 +17,6 @@ namespace SpecFlow.Extensions.Database
             _value = value;
         }
 
-
         public SQL(SqlLogic logical, SqlCompare compare, string name, object value)
         {
             _logical = logical;
@@ -59,13 +58,16 @@ namespace SpecFlow.Extensions.Database
                 {
                     case SqlLogic.AND:
                         return " AND ";
+
                     case SqlLogic.OR:
                         return " OR ";
+
                     default:
                         return string.Empty;
                 }
             }
         }
+
         private string Compare
         {
             get
@@ -74,22 +76,29 @@ namespace SpecFlow.Extensions.Database
                 {
                     case SqlCompare.Equals:
                         return "=";
+
                     case SqlCompare.Greater:
                         return ">";
+
                     case SqlCompare.Less:
                         return "<";
+
                     case SqlCompare.GreaterOrEqual:
                         return ">=";
+
                     case SqlCompare.LessOrEqual:
                         return "<=";
+
                     case SqlCompare.NotEqual:
                         return "<>";
+
                     default:
                         throw new NotSupportedException();
                 }
             }
         }
     }
+
     public enum SqlLogic
     {
         AND, OR

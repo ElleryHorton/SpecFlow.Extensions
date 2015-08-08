@@ -13,7 +13,9 @@ namespace SpecFlow.Extensions.Web
         protected IEnumerable<IWebElement> _rows;
         protected Dictionary<string, int> _headerToIndex = new Dictionary<string, int>();
 
-        public TableElement() { }
+        public TableElement()
+        {
+        }
 
         public TableElement(IWebElement element)
         {
@@ -36,7 +38,7 @@ namespace SpecFlow.Extensions.Web
             return columnElements.ToArray()[_headerToIndex[header]];
         }
 
-        public IWebElement GetCell(string header, string text, Func<string,string,bool> ComparisonMethod)
+        public IWebElement GetCell(string header, string text, Func<string, string, bool> ComparisonMethod)
         {
             foreach (var row in _rows)
             {
@@ -89,7 +91,19 @@ namespace SpecFlow.Extensions.Web
             get { return _headerToIndex.Count; }
         }
 
-        public bool CompareToTable(List<string[]> table, int startIndex=1)
+        public List<string> GetRowText(int row)
+        {
+            List<string> list = new List<string>();
+
+            foreach (var header in _headerToIndex.Keys)
+            {
+                list.Add(GetCell(row, header).Text);
+            }
+
+            return list;
+        }
+
+        public bool CompareToTable(List<string[]> table, int startIndex = 1)
         {
             if (table.Count != RowCount)
             {
@@ -112,7 +126,7 @@ namespace SpecFlow.Extensions.Web
             return true;
         }
 
-        public bool CompareToTable(Table table, int startIndex=1)
+        public bool CompareToTable(Table table, int startIndex = 1)
         {
             if (table.Rows.Count != RowDataCount)
             {

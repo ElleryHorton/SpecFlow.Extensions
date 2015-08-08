@@ -1,6 +1,5 @@
 ﻿using OpenQA.Selenium;
 using System;
-using System.Collections.ObjectModel;
 
 namespace SpecFlow.Extensions.Web.CustomBys
 {
@@ -8,21 +7,33 @@ namespace SpecFlow.Extensions.Web.CustomBys
     {
         private static readonly Func<string, By> activator = By.Name;
 
-        public ByName(string usingString) : base(activator, usingString) { }
+        public ByName(string usingString)
+            : base(activator, usingString)
+        {
+        }
 
         public class Text : BaseText
         {
-            public Text(string usingString) : base(activator, usingString) { }
+            public Text(string usingString)
+                : base(activator, usingString)
+            {
+            }
         }
 
         public class TextPartial : BaseTextPartial
         {
-            public TextPartial(string usingString) : base(activator, usingString) { }
+            public TextPartial(string usingString)
+                : base(activator, usingString)
+            {
+            }
         }
 
         public class Attribute : BaseAttribute
         {
-            public Attribute(string usingString) : base(activator, usingString) { }
+            public Attribute(string usingString)
+                : base(activator, usingString)
+            {
+            }
         }
     }
 }

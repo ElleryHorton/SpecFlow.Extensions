@@ -1,7 +1,5 @@
-﻿
-using OpenQA.Selenium;
+﻿using OpenQA.Selenium;
 using SpecFlow.Extensions.PageObjects;
-using SpecFlow.Extensions.WebDriver.PortalDriver;
 using TechTalk.SpecFlow;
 
 namespace SpecFlow.Extensions.WebDriver.Hooks
@@ -90,4 +88,3 @@ namespace SpecFlow.Extensions.WebDriver.Hooks
         }
     }
 }
-

@@ -57,6 +57,7 @@
     <Compile Include="Framework\Hooks\EmptyScenarioIsInconclusive.cs" />
     <Compile Include="Framework\Hooks\SetTestHash.cs" />
     <Compile Include="PageObjects\AssemblyContainsPagesAttribute.cs" />
+    <Compile Include="PageObjects\AutoMapper.cs" />
     <Compile Include="PageObjects\LoginExamplePage.cs" />
     <Compile Include="PageObjects\Page.cs" />
     <Compile Include="PageObjects\PageFactory.cs" />
@@ -77,6 +78,7 @@
     <Compile Include="Web\ByWrappers\ByColumns.cs" />
     <Compile Include="Web\ByWrappers\ByEx.cs" />
     <Compile Include="Web\ByWrappers\ByText.cs" />
+    <Compile Include="Web\ByWrappers\Input.cs" />
     <Compile Include="Web\CustomBys\BaseCustomBy.cs" />
     <Compile Include="Web\CustomBys\ByClassName.cs" />
     <Compile Include="Web\CustomBys\ByCssSelector.cs" />

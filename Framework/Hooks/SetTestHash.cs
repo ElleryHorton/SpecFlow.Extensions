@@ -1,6 +1,6 @@
 ﻿using SpecFlow.Extensions.Framework.ExtensionMethods;
-using TechTalk.SpecFlow;
 using System.Linq;
+using TechTalk.SpecFlow;
 
 namespace SpecFlow.Extensions.Framework.Hooks
 {

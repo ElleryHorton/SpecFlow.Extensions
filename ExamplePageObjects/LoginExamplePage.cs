@@ -1,13 +1,11 @@
 ﻿using OpenQA.Selenium;
 using OpenQA.Selenium.Support.PageObjects;
 using SpecFlow.Extensions.Web.CustomBys;
-using SpecFlow.Extensions.WebDriver.PortalDriver;
 
 namespace SpecFlow.Extensions.PageObjects
 {
     public class LoginExamplePage : Page
     {
-
         [FindsBy(How = How.Custom, CustomFinderType = typeof(ById))]
         public IWebElement Username;
 

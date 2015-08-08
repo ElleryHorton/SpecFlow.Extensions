@@ -10,9 +10,15 @@ namespace SpecFlow.Extensions.PageObjects
     {
         public static IDriverFactory DriverFactory;
 
-        public Page() : this(DriverFactory.GetDriver().WrappedDriver) { }
+        public Page()
+            : this(DriverFactory == null ? null : DriverFactory.GetDriver().WrappedDriver)
+        {
+        }
 
-        public Page(IWrapsDriver WrapsDriver) : this(WrapsDriver.WrappedDriver) { }
+        public Page(IWrapsDriver WrapsDriver)
+            : this(WrapsDriver.WrappedDriver)
+        {
+        }
 
         public Page(IWebDriver WebDriver)
         {
@@ -20,11 +26,11 @@ namespace SpecFlow.Extensions.PageObjects
             OpenQA.Selenium.Support.PageObjects.PageFactory.InitElements(this, retryingLocator);
         }
 
-		public string Uri
+        public string Uri
         {
             get
             {
-                var assembly = System.Reflection.Assembly.GetExecutingAssembly().ManifestModule.Name;
+                var assembly = System.Reflection.Assembly.GetAssembly(GetType()).ManifestModule.Name;
                 assembly = assembly.Substring(0, assembly.Length - ".dll".Length);
                 return GetType().FullName.Replace(assembly, string.Empty).Replace(".", @"/");
             }
