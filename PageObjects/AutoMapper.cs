@@ -75,48 +75,52 @@ namespace SpecFlow.Extensions.PageObjects
             }
         }
 
-        public static bool Verify(Table table, object context)
+        public static bool Verify(Table table, object context, Func<string, string, bool> compareMethod)
         {
             BuildCustomTable(table);
-            return VerifyTableToObject(context, AnyMemberValueIsEqual);
+            return VerifyTableToObject(context, CompareTableToObject, compareMethod);
         }
 
-        public static bool Verify(object context, Table table)
+        public static bool Verify(object context, Table table, Func<string, string, bool> compareMethod)
         {
-            return VerifyObjectToTable(context, table, MemberValueIsEqual);
+            BuildCustomTable(table);
+            return VerifyObjectToTable(context, CompareObjectMemberToTable, compareMethod);
         }
 
-        public static bool Verify(Table table, Page page, IPortalDriver driver)
+        public static bool Verify(Table table, Page page, IPortalDriver driver, Func<string, string, bool> compareMethod)
         {
             _driver = driver;
             BuildCustomTable(table);
-            return VerifyTableToObject(page, AnyPageElementValueIsEqual);
+            return VerifyTableToObject(page, CompareTableToPage, compareMethod);
         }
 
-        public static bool Verify(Page page, Table table, IPortalDriver driver)
+        public static bool Verify(Page page, Table table, IPortalDriver driver, Func<string, string, bool> compareMethod)
         {
             _driver = driver;
-            return VerifyObjectToTable(page, table, PageElementValueIsEqual);
+            BuildCustomTable(table);
+            return VerifyObjectToTable(page, ComparePageElementToTable, compareMethod);
         }
 
-        public static bool Verify(object context, Page page, IPortalDriver driver)
+        public static bool Verify(object context, Page page, IPortalDriver driver, Func<string, string, bool> compareMethod)
         {
             _driver = driver;
-            return CompareMembersToMembers(context, page, GetMembers(context.GetType()), GetByExs(page.GetType()));
+            return CompareMembersToMembers(context, page, GetMembers(context.GetType()), GetByExs(page.GetType()), compareMethod);
         }
 
-        public static bool Verify(Page page, object context, IPortalDriver driver)
+        public static bool Verify(Page page, object context, IPortalDriver driver, Func<string, string, bool> compareMethod)
         {
             _driver = driver;
-            return CompareMembersToMembers(context, page, GetByExs(page.GetType()), GetMembers(context.GetType()));
+            return CompareMembersToMembers(context, page, GetByExs(page.GetType()), GetMembers(context.GetType()), compareMethod);
         }
 
-        private static bool CompareMembersToMembers(object context, Page page, IEnumerable<MemberInfo> membersToLoop, IEnumerable<MemberInfo> membersToSearch)
+        private static bool CompareMembersToMembers(object context, Page page,
+            IEnumerable<MemberInfo> membersToLoop, IEnumerable<MemberInfo> membersToSearch,
+            Func<string, string, bool> compareMethod)
         {
             foreach (var member in membersToLoop)
             {
                 var foundMember = membersToSearch.FirstOrDefault(m => m.Name == member.Name);
-                if (!PageElementValueIsEqual(foundMember, page, GetMemberValue(context, member).ToString()))
+                if (!ComparePageElementToTable(foundMember, page, GetMemberValue(context, member).ToString(), compareMethod))
                 {
                     return false;
                 }
@@ -124,13 +128,14 @@ namespace SpecFlow.Extensions.PageObjects
             return true;
         }
 
-        private static bool VerifyTableToObject(object obj, Func<object, string, string, bool> anyMemberIsEqual)
+        private static bool VerifyTableToObject(object obj, Func<object, string, string, Func<string, string, bool>, bool> compareMemberMethod,
+            Func<string, string, bool> compareMethod)
         {
             foreach (var row in Rows)
             {
                 foreach (var header in Headers)
                 {
-                    if (!anyMemberIsEqual(obj, header, row[header]))
+                    if (!compareMemberMethod(obj, header, row[header], compareMethod))
                     {
                         return false;
                     }
@@ -139,14 +144,15 @@ namespace SpecFlow.Extensions.PageObjects
             return true;
         }
 
-        private static bool VerifyObjectToTable(object obj, Table table, Func<MemberInfo, object, string, bool> memberIsEqual)
+        private static bool VerifyObjectToTable(object obj, Func<MemberInfo, object, string, Func<string, string, bool>, bool> compareMemberMethod,
+            Func<string, string, bool> compareMethod)
         {
             var members = GetMembers(obj.GetType());
-            foreach (var row in table.Rows)
+            foreach (var row in Rows)
             {
                 foreach (var member in members)
                 {
-                    if (!memberIsEqual(member, obj, row[member.Name]))
+                    if (!compareMemberMethod(member, obj, row[member.Name], compareMethod))
                     {
                         return false;
                     }
@@ -155,16 +161,16 @@ namespace SpecFlow.Extensions.PageObjects
             return true;
         }
 
-        private static bool AnyMemberValueIsEqual(object context, string memberName, string value)
+        private static bool CompareTableToObject(object context, string memberName, string value, Func<string, string, bool> compareMethod)
         {
             var members = GetMembers(context.GetType());
             var member = members.FirstOrDefault(m => m.Name == memberName);
-            return MemberValueIsEqual(member, context, value);
+            return CompareObjectMemberToTable(member, context, value, compareMethod);
         }
 
-        private static bool MemberValueIsEqual(MemberInfo member, object context, string value)
+        private static bool CompareObjectMemberToTable(MemberInfo member, object context, string value, Func<string, string, bool> compareMethod)
         {
-            return GetMemberValue(context, member).ToString() == value;
+            return compareMethod(GetMemberValue(context, member).ToString(), value);
         }
 
         private static object GetMemberValue(object obj, MemberInfo member)
@@ -179,23 +185,23 @@ namespace SpecFlow.Extensions.PageObjects
             }
         }
 
-        private static bool AnyPageElementValueIsEqual(object page, string memberName, string value)
+        private static bool CompareTableToPage(object page, string memberName, string value, Func<string, string, bool> compareMethod)
         {
             var pageByExs = GetByExs(page.GetType());
             var member = pageByExs.FirstOrDefault(m => m.Name == memberName);
-            return PageElementValueIsEqual(member, page, value);
+            return ComparePageElementToTable(member, page, value, compareMethod);
         }
 
-        private static bool PageElementValueIsEqual(MemberInfo member, object page, string value)
+        private static bool ComparePageElementToTable(MemberInfo member, object page, string value, Func<string, string, bool> compareMethod)
         {
             ByEx byEx = (ByEx)GetMemberValue(page, member);
             if (byEx.Input == Input.Select)
             {
-                return _driver.FindSelect(byEx).Value() == value;
+                return compareMethod(_driver.FindSelect(byEx).Value(), value);
             }
             else
             {
-                return _driver.Find(byEx).Value() == value;
+                return compareMethod(_driver.Find(byEx).Value(), value);
             }
         }
 
@@ -244,6 +250,7 @@ namespace SpecFlow.Extensions.PageObjects
                 driver.Set((ByEx)((FieldInfo)member).GetValue(page), value);
             else
                 driver.Set((ByEx)((PropertyInfo)member).GetValue(page), value);
+
         }
 
         private static void SetMember(object Context, IEnumerable<MemberInfo> contextMembers, string memberName, string value)
@@ -288,39 +295,33 @@ namespace SpecFlow.Extensions.PageObjects
                                 row[header] = row[header].Randomize();
                             }
                             break;
-
                         case RandomShortMacro:
                             foreach (var row in table.Rows)
                             {
                                 row[header] = row[header].RandomizeNoTimestamp();
                             }
                             break;
-
                         case RandomHashMacro:
                             foreach (var row in table.Rows)
                             {
                                 row[header] = row[header].RandomizeHashOnly();
                             }
                             break;
-
                         case DataMacro:
                             foreach (var row in table.Rows)
                             {
                                 row[header] = Tester.TestDataPath(row[header]);
                             }
                             break;
-
                         case EmailMacro:
                             foreach (var row in table.Rows)
                             {
                                 row[header] = Tester.Email;
                             }
                             break;
-
                         case SkipMacro:
                             skip = true;
                             break;
-
                         default: // macro not supported, do nothing
                             break;
                     }
