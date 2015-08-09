@@ -39,10 +39,10 @@ namespace SpecFlow.Extensions.PageObjects
         public static void Fill(Table table, object context, IPortalDriver driver, Page page)
         {
             BuildCustomTable(table);
-            IEnumerable<MemberInfo> pageByExs = null;
+            IList<MemberWrapper> pageByExs = null;
             if (driver != null && page != null)
             {
-                pageByExs = GetByExs(page.GetType());
+                pageByExs = GetMembersByEx(page);
             }
             if (context == null)
             {
@@ -53,7 +53,7 @@ namespace SpecFlow.Extensions.PageObjects
             }
             else
             {
-                var contextMembers = GetMembers(context.GetType());
+                var contextMembers = GetMembers(context);
                 if (pageByExs == null)
                 {
                     SetContextMembers(context, contextMembers);
@@ -67,8 +67,8 @@ namespace SpecFlow.Extensions.PageObjects
 
         public static void Fill(object objSource, object objDestination)
         {
-            var sourceMembers = GetMembers(objSource.GetType());
-            var destinationMembers = GetMembers(objDestination.GetType());
+            var sourceMembers = GetMembers(objSource);
+            var destinationMembers = GetMembers(objDestination);
             foreach (var member in sourceMembers)
             {
                 SetMember(objDestination, destinationMembers, member.Name, GetMemberValue(objSource, member).ToString());
@@ -78,49 +78,49 @@ namespace SpecFlow.Extensions.PageObjects
         public static bool Verify(Table table, object context, Func<string, string, bool> compareMethod)
         {
             BuildCustomTable(table);
-            return VerifyTableToObject(context, CompareTableToObject, compareMethod);
+            return VerifyTableToObject(context, compareMethod, GetMembers, GetMemberValue);
         }
 
         public static bool Verify(object context, Table table, Func<string, string, bool> compareMethod)
         {
             BuildCustomTable(table);
-            return VerifyObjectToTable(context, CompareObjectMemberToTable, compareMethod);
+            return VerifyObjectToTable(context, compareMethod, GetMembers, GetMemberValue);
         }
 
         public static bool Verify(Table table, Page page, IPortalDriver driver, Func<string, string, bool> compareMethod)
         {
             _driver = driver;
             BuildCustomTable(table);
-            return VerifyTableToObject(page, CompareTableToPage, compareMethod);
+            return VerifyTableToObject(page, compareMethod, GetMembersByEx, GetMemberValueByEx);
         }
 
         public static bool Verify(Page page, Table table, IPortalDriver driver, Func<string, string, bool> compareMethod)
         {
             _driver = driver;
             BuildCustomTable(table);
-            return VerifyObjectToTable(page, ComparePageElementToTable, compareMethod);
+            return VerifyObjectToTable(page, compareMethod, GetMembersByEx, GetMemberValueByEx);
         }
 
         public static bool Verify(object context, Page page, IPortalDriver driver, Func<string, string, bool> compareMethod)
         {
             _driver = driver;
-            return CompareMembersToMembers(context, page, GetMembers(context.GetType()), GetByExs(page.GetType()), compareMethod);
+            return CompareMembersToMembers(context, page, GetMembers(context), GetMembersByEx(page), compareMethod);
         }
 
         public static bool Verify(Page page, object context, IPortalDriver driver, Func<string, string, bool> compareMethod)
         {
             _driver = driver;
-            return CompareMembersToMembers(context, page, GetByExs(page.GetType()), GetMembers(context.GetType()), compareMethod);
+            return CompareMembersToMembers(context, page, GetMembersByEx(page), GetMembers(context), compareMethod);
         }
 
         private static bool CompareMembersToMembers(object context, Page page,
-            IEnumerable<MemberInfo> membersToLoop, IEnumerable<MemberInfo> membersToSearch,
+            IList<MemberWrapper> membersToLoop, IList<MemberWrapper> membersToSearch,
             Func<string, string, bool> compareMethod)
         {
             foreach (var member in membersToLoop)
             {
                 var foundMember = membersToSearch.FirstOrDefault(m => m.Name == member.Name);
-                if (!ComparePageElementToTable(foundMember, page, GetMemberValue(context, member).ToString(), compareMethod))
+                if (!compareMethod(GetMemberValueByEx(page, foundMember).ToString(), GetMemberValue(context, member).ToString()))
                 {
                     return false;
                 }
@@ -128,14 +128,15 @@ namespace SpecFlow.Extensions.PageObjects
             return true;
         }
 
-        private static bool VerifyTableToObject(object obj, Func<object, string, string, Func<string, string, bool>, bool> compareMemberMethod,
-            Func<string, string, bool> compareMethod)
+        private static bool VerifyTableToObject(object obj, Func<string, string, bool> compareMethod,
+            Func<object, IList<MemberWrapper>> getMembers, Func<object, MemberWrapper, object> getMemberValue)
         {
             foreach (var row in Rows)
             {
                 foreach (var header in Headers)
                 {
-                    if (!compareMemberMethod(obj, header, row[header], compareMethod))
+                    var member = getMembers(obj).FirstOrDefault(m => m.Name == header);
+                    if (!compareMethod(getMemberValue(obj, member).ToString(), row[header]))
                     {
                         return false;
                     }
@@ -144,15 +145,15 @@ namespace SpecFlow.Extensions.PageObjects
             return true;
         }
 
-        private static bool VerifyObjectToTable(object obj, Func<MemberInfo, object, string, Func<string, string, bool>, bool> compareMemberMethod,
-            Func<string, string, bool> compareMethod)
+        private static bool VerifyObjectToTable(object obj, Func<string, string, bool> compareMethod,
+            Func<object, IList<MemberWrapper>> getMembers, Func<object, MemberWrapper, object> getMemberValue)
         {
-            var members = GetMembers(obj.GetType());
+            var members = getMembers(obj);
             foreach (var row in Rows)
             {
                 foreach (var member in members)
                 {
-                    if (!compareMemberMethod(member, obj, row[member.Name], compareMethod))
+                    if (!compareMethod(getMemberValue(obj, member).ToString(), row[member.Name]))
                     {
                         return false;
                     }
@@ -161,51 +162,25 @@ namespace SpecFlow.Extensions.PageObjects
             return true;
         }
 
-        private static bool CompareTableToObject(object context, string memberName, string value, Func<string, string, bool> compareMethod)
+        private static object GetMemberValue(object obj, MemberWrapper member)
         {
-            var members = GetMembers(context.GetType());
-            var member = members.FirstOrDefault(m => m.Name == memberName);
-            return CompareObjectMemberToTable(member, context, value, compareMethod);
+            return member.GetValue(obj);
         }
 
-        private static bool CompareObjectMemberToTable(MemberInfo member, object context, string value, Func<string, string, bool> compareMethod)
-        {
-            return compareMethod(GetMemberValue(context, member).ToString(), value);
-        }
-
-        private static object GetMemberValue(object obj, MemberInfo member)
-        {
-            if (member is FieldInfo)
-            {
-                return ((FieldInfo)member).GetValue(obj);
-            }
-            else
-            {
-                return ((PropertyInfo)member).GetValue(obj);
-            }
-        }
-
-        private static bool CompareTableToPage(object page, string memberName, string value, Func<string, string, bool> compareMethod)
-        {
-            var pageByExs = GetByExs(page.GetType());
-            var member = pageByExs.FirstOrDefault(m => m.Name == memberName);
-            return ComparePageElementToTable(member, page, value, compareMethod);
-        }
-
-        private static bool ComparePageElementToTable(MemberInfo member, object page, string value, Func<string, string, bool> compareMethod)
+        private static object GetMemberValueByEx(object page, MemberWrapper member)
         {
             ByEx byEx = (ByEx)GetMemberValue(page, member);
             if (byEx.Input == Input.Select)
             {
-                return compareMethod(_driver.FindSelect(byEx).Value(), value);
+                return _driver.FindSelect(byEx).Value();
             }
             else
             {
-                return compareMethod(_driver.Find(byEx).Value(), value);
+                return _driver.Find(byEx).Value();
             }
         }
 
-        private static void SetContextAndPageMembers(IPortalDriver driver, Page page, object context, IEnumerable<MemberInfo> contextMembers, IEnumerable<MemberInfo> pageByExs)
+        private static void SetContextAndPageMembers(IPortalDriver driver, Page page, object context, IList<MemberWrapper> contextMembers, IList<MemberWrapper> pageByExs)
         {
             foreach (var row in Rows)
             {
@@ -219,7 +194,7 @@ namespace SpecFlow.Extensions.PageObjects
             }
         }
 
-        private static void SetContextMembers(object context, IEnumerable<MemberInfo> contextMembers)
+        private static void SetContextMembers(object context, IList<MemberWrapper> contextMembers)
         {
             foreach (var row in Rows)
             {
@@ -231,7 +206,7 @@ namespace SpecFlow.Extensions.PageObjects
             }
         }
 
-        private static void SetPageMembers(IPortalDriver driver, Page page, IEnumerable<MemberInfo> pageByExs)
+        private static void SetPageMembers(IPortalDriver driver, Page page, IList<MemberWrapper> pageByExs)
         {
             foreach (var row in Rows)
             {
@@ -243,37 +218,38 @@ namespace SpecFlow.Extensions.PageObjects
             }
         }
 
-        private static void SetPageElement(IPortalDriver driver, Page page, IEnumerable<MemberInfo> pageByExs, string memberName, string value)
+        private static void SetPageElement(IPortalDriver driver, Page page, IList<MemberWrapper> pageByExs, string memberName, string value)
         {
             var member = pageByExs.FirstOrDefault(m => m.Name == memberName);
-            if (member is FieldInfo)
-                driver.Set((ByEx)((FieldInfo)member).GetValue(page), value);
-            else
-                driver.Set((ByEx)((PropertyInfo)member).GetValue(page), value);
-
+            driver.Set((ByEx)(member.GetValue(page)), value);
         }
 
-        private static void SetMember(object Context, IEnumerable<MemberInfo> contextMembers, string memberName, string value)
+        private static void SetMember(object Context, IList<MemberWrapper> contextMembers, string memberName, string value)
         {
             var member = contextMembers.FirstOrDefault(m => m.Name == memberName);
-            if (member is FieldInfo)
-                ((FieldInfo)member).SetValue(Context, value);
-            else
-                ((PropertyInfo)member).SetValue(Context, value);
+            member.SetValue(Context, value);
         }
 
-        private static IEnumerable<MemberInfo> GetMembers(Type type)
+        private static IList<MemberWrapper> GetMembersByEx(object page)
         {
-            var fields = type.GetFields(BindingFlags.Public | BindingFlags.Instance).Cast<MemberInfo>();
-            var props = type.GetProperties().Cast<MemberInfo>();
-            return fields.Union(props);
+            var fields = page.GetType().GetFields(BindingFlags.Public | BindingFlags.Instance).Where(member => member.FieldType == typeof(ByEx)).ToList();
+            var props = page.GetType().GetProperties().Where(member => member.PropertyType == typeof(ByEx)).ToList();
+            return WrapMembers(fields, props);
         }
 
-        private static IEnumerable<MemberInfo> GetByExs(Type type)
+        private static IList<MemberWrapper> GetMembers(object obj)
         {
-            var fields = type.GetFields(BindingFlags.Public | BindingFlags.Instance).Where(member => member.FieldType == typeof(ByEx)).Cast<MemberInfo>();
-            var props = type.GetProperties().Where(member => member.PropertyType == typeof(ByEx)).Cast<MemberInfo>();
-            return fields.Union(props);
+            var fields = obj.GetType().GetFields(BindingFlags.Public | BindingFlags.Instance).ToList();
+            var props = obj.GetType().GetProperties().ToList();
+            return WrapMembers(fields, props);
+        }
+
+        private static List<MemberWrapper> WrapMembers(List<FieldInfo> fields, List<PropertyInfo> props)
+        {
+            List<MemberWrapper> members = new List<MemberWrapper>();
+            fields.ForEach(f => members.Add(new FieldWrapper(f)));
+            props.ForEach(p => members.Add(new PropertyWrapper(p)));
+            return members;
         }
 
         private static void BuildCustomTable(Table table)
@@ -295,33 +271,39 @@ namespace SpecFlow.Extensions.PageObjects
                                 row[header] = row[header].Randomize();
                             }
                             break;
+
                         case RandomShortMacro:
                             foreach (var row in table.Rows)
                             {
                                 row[header] = row[header].RandomizeNoTimestamp();
                             }
                             break;
+
                         case RandomHashMacro:
                             foreach (var row in table.Rows)
                             {
                                 row[header] = row[header].RandomizeHashOnly();
                             }
                             break;
+
                         case DataMacro:
                             foreach (var row in table.Rows)
                             {
                                 row[header] = Tester.TestDataPath(row[header]);
                             }
                             break;
+
                         case EmailMacro:
                             foreach (var row in table.Rows)
                             {
                                 row[header] = Tester.Email;
                             }
                             break;
+
                         case SkipMacro:
                             skip = true;
                             break;
+
                         default: // macro not supported, do nothing
                             break;
                     }
