@@ -48,7 +48,7 @@ namespace SpecFlow.Extensions.PageObjects
             {
                 if (pageByExs != null)
                 {
-                    SetPageMembers(driver, page, pageByExs);
+                    SetMembers(page, pageByExs, SetPageElement);
                 }
             }
             else
@@ -56,7 +56,7 @@ namespace SpecFlow.Extensions.PageObjects
                 var contextMembers = GetMembers(context);
                 if (pageByExs == null)
                 {
-                    SetContextMembers(context, contextMembers);
+                    SetMembers(context, contextMembers, SetMember);
                 }
                 else
                 {
@@ -189,45 +189,33 @@ namespace SpecFlow.Extensions.PageObjects
                     // context
                     SetMember(context, contextMembers, header, row[header]);
                     // pageObject
-                    SetPageElement(driver, page, pageByExs, header, row[header]);
+                    SetPageElement(page, pageByExs, header, row[header]);
                 }
             }
         }
 
-        private static void SetContextMembers(object context, IList<MemberWrapper> contextMembers)
+        private static void SetMembers(object obj, IList<MemberWrapper> members, Action<object, IList<MemberWrapper>, string, string> setMember)
         {
             foreach (var row in Rows)
             {
                 foreach (var header in Headers)
                 {
                     // context
-                    SetMember(context, contextMembers, header, row[header]);
+                    setMember(obj, members, header, row[header]);
                 }
             }
         }
 
-        private static void SetPageMembers(IPortalDriver driver, Page page, IList<MemberWrapper> pageByExs)
+        private static void SetPageElement(object page, IList<MemberWrapper> members, string memberName, string value)
         {
-            foreach (var row in Rows)
-            {
-                foreach (var header in Headers)
-                {
-                    // pageObject
-                    SetPageElement(driver, page, pageByExs, header, row[header]);
-                }
-            }
+            var member = members.FirstOrDefault(m => m.Name == memberName);
+            _driver.Set((ByEx)(member.GetValue(page)), value);
         }
 
-        private static void SetPageElement(IPortalDriver driver, Page page, IList<MemberWrapper> pageByExs, string memberName, string value)
+        private static void SetMember(object obj, IList<MemberWrapper> members, string memberName, string value)
         {
-            var member = pageByExs.FirstOrDefault(m => m.Name == memberName);
-            driver.Set((ByEx)(member.GetValue(page)), value);
-        }
-
-        private static void SetMember(object Context, IList<MemberWrapper> contextMembers, string memberName, string value)
-        {
-            var member = contextMembers.FirstOrDefault(m => m.Name == memberName);
-            member.SetValue(Context, value);
+            var member = members.FirstOrDefault(m => m.Name == memberName);
+            member.SetValue(obj, value);
         }
 
         private static IList<MemberWrapper> GetMembersByEx(object page)
