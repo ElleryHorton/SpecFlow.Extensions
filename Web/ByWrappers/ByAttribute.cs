@@ -1,6 +1,7 @@
 ﻿using OpenQA.Selenium;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace SpecFlow.Extensions.Web.ByWrappers
 {
@@ -35,6 +36,11 @@ namespace SpecFlow.Extensions.Web.ByWrappers
         {
             Attributes = attr ?? new Dictionary<string, string>();
             ComparisonMethod = attrComparisonMethod;
+        }
+
+        public override IEnumerable<IWebElement> FilterElements(IEnumerable<IWebElement> elements)
+        {
+            return base.FilterElements(elements).Where(element => Attributes.All(attribute => ComparisonMethod(element.GetAttribute(attribute.Key), attribute.Value)));
         }
     }
 }

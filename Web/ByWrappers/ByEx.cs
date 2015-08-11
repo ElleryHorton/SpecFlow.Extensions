@@ -1,4 +1,6 @@
 ﻿using OpenQA.Selenium;
+using System.Collections.Generic;
+using System.Linq;
 
 namespace SpecFlow.Extensions.Web.ByWrappers
 {
@@ -13,6 +15,11 @@ namespace SpecFlow.Extensions.Web.ByWrappers
             By = by;
             isVisible = visibleOnly;
             Input = input;
+        }
+
+        virtual public IEnumerable<IWebElement> FilterElements(IEnumerable<IWebElement> elements)
+        {
+            return isVisible ? elements.Where(e => e.Displayed) : elements;
         }
     }
 }

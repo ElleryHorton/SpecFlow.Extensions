@@ -39,7 +39,7 @@ namespace SpecFlow.Extensions.WebDriver.PortalDriver
         {
             string oldUrl = WrappedDriver.Url;
             if (element.Displayed)
-                Click(element);
+                element.Click();
             else
                 ClickInvisible(element);
             WrappedDriver.WaitForUrlToChange(oldUrl, _maxTimeoutMilliseconds);
@@ -49,11 +49,6 @@ namespace SpecFlow.Extensions.WebDriver.PortalDriver
         public IWebElement Find(ByEx byEx)
         {
             return WrappedDriver.FindElement(byEx);
-        }
-
-        public IWebElement Find(IWebElement element) // support backwards compatibility
-        {
-            return element; // already found by PageObject pattern
         }
 
         public IEnumerable<IWebElement> FindAll(ByEx byEx)
@@ -90,30 +85,11 @@ namespace SpecFlow.Extensions.WebDriver.PortalDriver
             });
         }
 
-        public void Clear(IWebElement element)
-        {
-            TryAgain(() =>
-            {
-                element.Clear();
-                return true;
-            });
-        }
-
         public void Click(ByEx byEx)
         {
             TryAgain(() =>
             {
                 Find(byEx).Click();
-                return true;
-            });
-            WaitForPageLoad();
-        }
-
-        public void Click(IWebElement element)
-        {
-            TryAgain(() =>
-            {
-                element.Click();
                 return true;
             });
             WaitForPageLoad();
@@ -145,14 +121,6 @@ namespace SpecFlow.Extensions.WebDriver.PortalDriver
             });
         }
 
-        public bool Displayed(IWebElement element)
-        {
-            return TryAgain(() =>
-            {
-                return element.Displayed;
-            });
-        }
-
         public bool Exists(ByEx byEx)
         {
             return WrappedDriver.HasChild(byEx);
@@ -160,17 +128,14 @@ namespace SpecFlow.Extensions.WebDriver.PortalDriver
 
         public bool Exists(Func<IWebElement> pageObjectElement)
         {
-            bool exists = false;
             try
             {
-                var element = pageObjectElement();
-                exists = true;
+                return pageObjectElement().Displayed;
             }
             catch
             {
-                exists = false;
+                return false;
             }
-            return exists;
         }
 
         public void Select(ByEx byEx)
@@ -198,15 +163,6 @@ namespace SpecFlow.Extensions.WebDriver.PortalDriver
             TryAgain(() =>
             {
                 Find(byEx).SendKeys(text);
-                return true;
-            });
-        }
-
-        public void SendKeys(IWebElement element, string text)
-        {
-            TryAgain(() =>
-            {
-                element.SendKeys(text);
                 return true;
             });
         }

@@ -25,130 +25,153 @@ namespace SpecFlow.Extensions.PageObjects
         public static IList<string> Headers;
         public static IList<IDictionary<string, string>> Rows;
         private static IPortalDriver _driver;
+        private static bool _ignoreMissingMembers;
 
-        public static void Fill(Table table, object context)
+        public static void Fill(Table table, object context, bool ignoreMissingMembers = true)
         {
-            Fill(table, context, null, null);
+            _ignoreMissingMembers = ignoreMissingMembers;
+            BuildCustomTable(table);
+            var contextMembers = GetMembers(context.GetType());
+            SetMembers(context, contextMembers, SetMemberValue);
         }
 
-        public static void Fill(Table table, IPortalDriver driver, Page page)
+        public static void Fill(Table table, IPortalDriver driver, Page page, bool ignoreMissingMembers = true)
         {
-            Fill(table, null, driver, page);
+            _ignoreMissingMembers = ignoreMissingMembers;
+            BuildCustomTable(table);
+            _driver = driver;
+            IList<MemberWrapper> pageByExs = GetMembersByEx(page.GetType());
+            SetMembers(page, pageByExs, SetMemberValueByEx);
         }
 
-        public static void Fill(Table table, object context, IPortalDriver driver, Page page)
+        public static void Fill(Table table, object context, IPortalDriver driver, Page page, bool ignoreMissingMembers = true)
+        {
+            _ignoreMissingMembers = ignoreMissingMembers;
+            BuildCustomTable(table);
+            _driver = driver;
+            IList<MemberWrapper> pageByExs = GetMembersByEx(page.GetType());
+            var contextMembers = GetMembers(context.GetType());
+            SetContextAndPageMembers(page, context, contextMembers, pageByExs);
+        }
+
+        public static void Fill(object objSource, object objDestination, bool ignoreMissingMembers = true)
+        {
+            SetMembers(objSource, objDestination, GetMembers(objSource.GetType()), GetMembers(objDestination.GetType()),
+                GetMemberValue, SetMemberValue, ignoreMissingMembers);
+        }
+
+        public static void Fill(object obj, Page page, bool ignoreMissingMembers = true)
+        {
+            SetMembers(obj, page, GetMembers(obj.GetType()), GetMembersByEx(page.GetType()),
+                GetMemberValue, SetMemberValueByEx, ignoreMissingMembers);
+        }
+
+        public static void Fill(Page page, object obj, bool ignoreMissingMembers = true)
+        {
+            SetMembers(page, obj, GetMembersByEx(page.GetType()), GetMembers(obj.GetType()),
+                GetMemberValueByEx, SetMemberValue, ignoreMissingMembers);
+        }
+
+        public static bool Verify(Table table, object context, Func<string, string, bool> compareMethod, bool ignoreMissingMembers = true)
         {
             BuildCustomTable(table);
-            IList<MemberWrapper> pageByExs = null;
-            if (driver != null && page != null)
+            return VerifyTableToObject(context, GetMembers, GetMemberValue, compareMethod);
+        }
+
+        public static bool Verify(object context, Table table, Func<string, string, bool> compareMethod, bool ignoreMissingMembers = true)
+        {
+            BuildCustomTable(table);
+            return VerifyObjectToTable(context, GetMembers, GetMemberValue, compareMethod);
+        }
+
+        public static bool Verify(Table table, Page page, IPortalDriver driver, Func<string, string, bool> compareMethod, bool ignoreMissingMembers = true)
+        {
+            _driver = driver;
+            BuildCustomTable(table);
+            return VerifyTableToObject(page, GetMembersByEx, GetMemberValueByEx, compareMethod);
+        }
+
+        public static bool Verify(Page page, Table table, IPortalDriver driver, Func<string, string, bool> compareMethod, bool ignoreMissingMembers = true)
+        {
+            _driver = driver;
+            BuildCustomTable(table);
+            return VerifyObjectToTable(page, GetMembersByEx, GetMemberValueByEx, compareMethod);
+        }
+
+        public static bool Verify(object context, Page page, IPortalDriver driver, Func<string, string, bool> compareMethod, bool ignoreMissingMembers = true)
+        {
+            _driver = driver;
+            return CompareMembersToMembers(context, page, GetMembers, GetMembersByEx, GetMemberValue, GetMemberValueByEx, compareMethod);
+        }
+
+        public static bool Verify(Page page, object context, IPortalDriver driver, Func<string, string, bool> compareMethod, bool ignoreMissingMembers = true)
+        {
+            _driver = driver;
+            return CompareMembersToMembers(page, context, GetMembersByEx, GetMembers, GetMemberValueByEx, GetMemberValue, compareMethod);
+        }
+
+        private static bool CompareMembersToMembers(object objSource, object objDestination,
+            Func<Type, IList<MemberWrapper>> getSourceMembers, Func<Type, IList<MemberWrapper>> getDestinationMembers,
+            Func<object, MemberWrapper, object> getSourceMemberValue, Func<object, MemberWrapper, object> getDestinationMemberValue,
+            Func<string, string, bool> compareMethod)
+        {
+            foreach (var member in getSourceMembers(objSource.GetType()))
             {
-                pageByExs = GetMembersByEx(page);
-            }
-            if (context == null)
-            {
-                if (pageByExs != null)
+                var foundMember = getDestinationMembers(objDestination.GetType()).FirstOrDefault(m => m.Name == member.Name);
+                if (foundMember == null)
                 {
-                    SetMembers(page, pageByExs, SetPageElement);
-                }
-            }
-            else
-            {
-                var contextMembers = GetMembers(context);
-                if (pageByExs == null)
-                {
-                    SetMembers(context, contextMembers, SetMember);
+                    if (!_ignoreMissingMembers)
+                    {
+                        throw new MissingMemberException();
+                    } // else do nothing
                 }
                 else
                 {
-                    SetContextAndPageMembers(driver, page, context, contextMembers, pageByExs);
+                    if (!compareMethod(getSourceMemberValue(objSource, member).ToString(), getDestinationMemberValue(objDestination, foundMember).ToString()))
+                    {
+                        return false;
+                    }
                 }
-            }
-        }
-
-        public static void Fill(object objSource, object objDestination)
-        {
-            var sourceMembers = GetMembers(objSource);
-            var destinationMembers = GetMembers(objDestination);
-            foreach (var member in sourceMembers)
-            {
-                SetMember(objDestination, destinationMembers, member.Name, GetMemberValue(objSource, member).ToString());
-            }
-        }
-
-        public static bool Verify(Table table, object context, Func<string, string, bool> compareMethod)
-        {
-            BuildCustomTable(table);
-            return VerifyTableToObject(context, compareMethod, GetMembers, GetMemberValue);
-        }
-
-        public static bool Verify(object context, Table table, Func<string, string, bool> compareMethod)
-        {
-            BuildCustomTable(table);
-            return VerifyObjectToTable(context, compareMethod, GetMembers, GetMemberValue);
-        }
-
-        public static bool Verify(Table table, Page page, IPortalDriver driver, Func<string, string, bool> compareMethod)
-        {
-            _driver = driver;
-            BuildCustomTable(table);
-            return VerifyTableToObject(page, compareMethod, GetMembersByEx, GetMemberValueByEx);
-        }
-
-        public static bool Verify(Page page, Table table, IPortalDriver driver, Func<string, string, bool> compareMethod)
-        {
-            _driver = driver;
-            BuildCustomTable(table);
-            return VerifyObjectToTable(page, compareMethod, GetMembersByEx, GetMemberValueByEx);
-        }
-
-        public static bool Verify(object context, Page page, IPortalDriver driver, Func<string, string, bool> compareMethod)
-        {
-            _driver = driver;
-            return CompareMembersToMembers(context, page, GetMembers(context), GetMembersByEx(page), compareMethod);
-        }
-
-        public static bool Verify(Page page, object context, IPortalDriver driver, Func<string, string, bool> compareMethod)
-        {
-            _driver = driver;
-            return CompareMembersToMembers(context, page, GetMembersByEx(page), GetMembers(context), compareMethod);
-        }
-
-        private static bool CompareMembersToMembers(object context, Page page,
-            IList<MemberWrapper> membersToLoop, IList<MemberWrapper> membersToSearch,
-            Func<string, string, bool> compareMethod)
-        {
-            foreach (var member in membersToLoop)
-            {
-                var foundMember = membersToSearch.FirstOrDefault(m => m.Name == member.Name);
-                if (!compareMethod(GetMemberValueByEx(page, foundMember).ToString(), GetMemberValue(context, member).ToString()))
-                {
-                    return false;
-                }
+                return true;
             }
             return true;
         }
 
-        private static bool VerifyTableToObject(object obj, Func<string, string, bool> compareMethod,
-            Func<object, IList<MemberWrapper>> getMembers, Func<object, MemberWrapper, object> getMemberValue)
+        private static bool VerifyTableToObject(object obj,
+            Func<Type, IList<MemberWrapper>> getMembers,
+            Func<object, MemberWrapper, object> getMemberValue,
+            Func<string, string, bool> compareMethod)
         {
             foreach (var row in Rows)
             {
                 foreach (var header in Headers)
                 {
-                    var member = getMembers(obj).FirstOrDefault(m => m.Name == header);
-                    if (!compareMethod(getMemberValue(obj, member).ToString(), row[header]))
+                    var foundMember = getMembers(obj.GetType()).FirstOrDefault(m => m.Name == header);
+                    if (foundMember == null)
                     {
-                        return false;
+                        if (!_ignoreMissingMembers)
+                        {
+                            throw new MissingMemberException();
+                        } // else do nothing
+                    }
+                    else
+                    {
+                        if (!compareMethod(getMemberValue(obj, foundMember).ToString(), row[header]))
+                        {
+                            return false;
+                        }
                     }
                 }
             }
             return true;
         }
 
-        private static bool VerifyObjectToTable(object obj, Func<string, string, bool> compareMethod,
-            Func<object, IList<MemberWrapper>> getMembers, Func<object, MemberWrapper, object> getMemberValue)
+        private static bool VerifyObjectToTable(object obj,
+            Func<Type, IList<MemberWrapper>> getMembers,
+            Func<object, MemberWrapper, object> getMemberValue,
+            Func<string, string, bool> compareMethod)
         {
-            var members = getMembers(obj);
+            var members = getMembers(obj.GetType());
             foreach (var row in Rows)
             {
                 foreach (var member in members)
@@ -180,55 +203,82 @@ namespace SpecFlow.Extensions.PageObjects
             }
         }
 
-        private static void SetContextAndPageMembers(IPortalDriver driver, Page page, object context, IList<MemberWrapper> contextMembers, IList<MemberWrapper> pageByExs)
+        private static void SetContextAndPageMembers(Page page, object context, IList<MemberWrapper> contextMembers, IList<MemberWrapper> pageByExs)
         {
             foreach (var row in Rows)
             {
                 foreach (var header in Headers)
                 {
                     // context
-                    SetMember(context, contextMembers, header, row[header]);
+                    SetMember(context, contextMembers, header, row[header], SetMemberValue);
                     // pageObject
-                    SetPageElement(page, pageByExs, header, row[header]);
+                    SetMember(page, pageByExs, header, row[header], SetMemberValueByEx);
                 }
             }
         }
 
-        private static void SetMembers(object obj, IList<MemberWrapper> members, Action<object, IList<MemberWrapper>, string, string> setMember)
+        private static void SetMembers(object obj, IList<MemberWrapper> members, Action<MemberWrapper, object, string> setMemberValue)
         {
             foreach (var row in Rows)
             {
                 foreach (var header in Headers)
                 {
                     // context
-                    setMember(obj, members, header, row[header]);
+                    SetMember(obj, members, header, row[header], setMemberValue);
                 }
             }
         }
 
-        private static void SetPageElement(object page, IList<MemberWrapper> members, string memberName, string value)
+        private static void SetMembers(object objSource, object objDestination,
+            IList<MemberWrapper> sourceMembers, IList<MemberWrapper> destinationMembers,
+            Func<object, MemberWrapper, object> getMemberValue,
+            Action<MemberWrapper, object, string> setMemberValue,
+            bool ignoreMissingMembers)
         {
-            var member = members.FirstOrDefault(m => m.Name == memberName);
+            _ignoreMissingMembers = ignoreMissingMembers;
+            foreach (var member in sourceMembers)
+            {
+                SetMember(objDestination, destinationMembers, member.Name, (getMemberValue).ToString(), setMemberValue);
+            }
+        }
+
+        private static void SetMember(object obj, IList<MemberWrapper> members, string memberName, string value, Action<MemberWrapper, object, string> setMember)
+        {
+            var foundMember = members.FirstOrDefault(m => m.Name == memberName);
+            if (foundMember == null)
+            {
+                if (!_ignoreMissingMembers)
+                {
+                    throw new MissingMemberException();
+                } // else do nothing
+            }
+            else
+            {
+                setMember(foundMember, obj, value);
+            }
+        }
+
+        private static void SetMemberValueByEx(MemberWrapper member, object page, string value)
+        {
             _driver.Set((ByEx)(member.GetValue(page)), value);
         }
 
-        private static void SetMember(object obj, IList<MemberWrapper> members, string memberName, string value)
+        private static void SetMemberValue(MemberWrapper member, object obj, string value)
         {
-            var member = members.FirstOrDefault(m => m.Name == memberName);
             member.SetValue(obj, value);
         }
 
-        private static IList<MemberWrapper> GetMembersByEx(object page)
+        private static IList<MemberWrapper> GetMembersByEx(Type type)
         {
-            var fields = page.GetType().GetFields(BindingFlags.Public | BindingFlags.Instance).Where(member => member.FieldType == typeof(ByEx)).ToList();
-            var props = page.GetType().GetProperties().Where(member => member.PropertyType == typeof(ByEx)).ToList();
+            var fields = type.GetFields(BindingFlags.Public | BindingFlags.Instance).Where(member => member.FieldType == typeof(ByEx)).ToList();
+            var props = type.GetProperties().Where(member => member.PropertyType == typeof(ByEx)).ToList();
             return WrapMembers(fields, props);
         }
 
-        private static IList<MemberWrapper> GetMembers(object obj)
+        private static IList<MemberWrapper> GetMembers(Type type)
         {
-            var fields = obj.GetType().GetFields(BindingFlags.Public | BindingFlags.Instance).ToList();
-            var props = obj.GetType().GetProperties().ToList();
+            var fields = type.GetFields(BindingFlags.Public | BindingFlags.Instance).ToList();
+            var props = type.GetProperties().ToList();
             return WrapMembers(fields, props);
         }
 

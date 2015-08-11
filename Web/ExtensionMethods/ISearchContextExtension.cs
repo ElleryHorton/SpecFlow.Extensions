@@ -12,16 +12,6 @@ namespace SpecFlow.Extensions.Web.ExtensionMethods
     {
         private const int MAX_RETRIES = 3;
 
-        private enum ByTypes { ByEx, ByAttribute, ByColumns, ByText };
-
-        private static IReadOnlyDictionary<Type, ByTypes> types = new Dictionary<Type, ByTypes>
-        {
-            {typeof(ByEx), ByTypes.ByEx},
-            {typeof(ByAttribute), ByTypes.ByAttribute},
-            {typeof(ByColumns), ByTypes.ByColumns},
-            {typeof(ByText), ByTypes.ByText}
-        };
-
         public static bool HasChild(this ISearchContext iFind, ByEx byEx)
         {
             return FindAll(iFind, byEx, 1, 0).Any(e => e.Displayed == true);
@@ -34,7 +24,7 @@ namespace SpecFlow.Extensions.Web.ExtensionMethods
             int tryCount = 0;
             while ((tryCount < MAX_RETRIES) && e == null)
             {
-                e = FindMethod(iFind, byEx);
+                e = byEx.FilterElements(iFind.FindElements(byEx.By)).FirstOrDefault();
 
                 tryCount++;
                 if (e == null)
@@ -45,11 +35,15 @@ namespace SpecFlow.Extensions.Web.ExtensionMethods
 
             if (e == null) // fail normally with built-in FindElement
             {
-                if (byEx is ByText || byEx is ByAttribute) // default FindElement(By) won't find it
+                if (byEx.GetType() == typeof(ByEx))
                 {
+                    e = iFind.FindElement(byEx.By);
+                }
+                else
+                {
+                    // default FindElement(By) won't find it
                     throw new NoSuchElementException();
                 }
-                e = iFind.FindElement(byEx.By);
             }
 
             return e;
@@ -62,11 +56,11 @@ namespace SpecFlow.Extensions.Web.ExtensionMethods
 
         private static IEnumerable<IWebElement> FindAll(ISearchContext iFind, ByEx byEx, int retries, int milliseconds)
         {
-            var elements = FindAllMethod(iFind, byEx);
+            var elements = byEx.FilterElements(iFind.FindElements(byEx.By));
             while ((retries > 0) && elements.Count() == 0)
             {
                 Thread.Sleep(milliseconds);
-                elements = FindAllMethod(iFind, byEx);
+                elements = byEx.FilterElements(iFind.FindElements(byEx.By));
                 retries--;
             }
             return elements;
@@ -94,53 +88,6 @@ namespace SpecFlow.Extensions.Web.ExtensionMethods
         public static TableElement FindTable(this ISearchContext iFind, ByEx byEx)
         {
             return new TableElement(iFind.FindElement(byEx));
-        }
-
-        private static IWebElement FindMethod(ISearchContext iFind, ByEx byEx)
-        {
-            var elements = FilterElementsByVisibility(iFind, byEx);
-            switch (types[byEx.GetType()])
-            {
-                case ByTypes.ByAttribute:
-                    return FilterElementsByAttributes(iFind, elements, (ByAttribute)byEx).FirstOrDefault();
-
-                case ByTypes.ByText:
-                    return FilterElementsByText(iFind, elements, (ByText)byEx).FirstOrDefault();
-
-                default:
-                    return elements.FirstOrDefault();
-            }
-        }
-
-        private static IEnumerable<IWebElement> FindAllMethod(ISearchContext iFind, ByEx byEx)
-        {
-            var elements = FilterElementsByVisibility(iFind, byEx);
-            switch (types[byEx.GetType()])
-            {
-                case ByTypes.ByAttribute:
-                    return FilterElementsByAttributes(iFind, elements, (ByAttribute)byEx);
-
-                case ByTypes.ByText:
-                    return FilterElementsByText(iFind, elements, (ByText)byEx);
-
-                default:
-                    return elements;
-            }
-        }
-
-        private static IEnumerable<IWebElement> FilterElementsByVisibility(ISearchContext iFind, ByEx byEx)
-        {
-            return byEx.isVisible ? iFind.FindElements(byEx.By).Where(e => e.Displayed) : iFind.FindElements(byEx.By);
-        }
-
-        private static IEnumerable<IWebElement> FilterElementsByAttributes(ISearchContext iFind, IEnumerable<IWebElement> elements, ByAttribute byEx)
-        {
-            return elements.Where(element => byEx.Attributes.All(attribute => byEx.ComparisonMethod(element.GetAttribute(attribute.Key), attribute.Value)));
-        }
-
-        private static IEnumerable<IWebElement> FilterElementsByText(ISearchContext iFind, IEnumerable<IWebElement> elements, ByText byEx)
-        {
-            return elements.Where(e => byEx.ComparisonMethod(e.Text, byEx.Text));
         }
     }
 }

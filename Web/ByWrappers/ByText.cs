@@ -1,5 +1,7 @@
 ﻿using OpenQA.Selenium;
 using System;
+using System.Collections.Generic;
+using System.Linq;
 
 namespace SpecFlow.Extensions.Web.ByWrappers
 {
@@ -20,6 +22,11 @@ namespace SpecFlow.Extensions.Web.ByWrappers
         {
             Text = text;
             ComparisonMethod = textComparisonMethod;
+        }
+
+        public override IEnumerable<IWebElement> FilterElements(IEnumerable<IWebElement> elements)
+        {
+            return base.FilterElements(elements).Where(e => ComparisonMethod(e.Text, Text));
         }
     }
 }

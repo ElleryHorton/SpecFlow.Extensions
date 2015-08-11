@@ -26,8 +26,6 @@ namespace SpecFlow.Extensions.WebDriver.PortalDriver
 
         IWebElement Find(ByEx byEx);
 
-        IWebElement Find(IWebElement element);
-
         IEnumerable<IWebElement> FindAll(ByEx byEx);
 
         SelectElement FindSelect(ByEx byEx);
@@ -40,19 +38,13 @@ namespace SpecFlow.Extensions.WebDriver.PortalDriver
 
         void Clear(ByEx byEx);
 
-        void Clear(IWebElement element);
-
         void Click(ByEx byEx);
-
-        void Click(IWebElement element);
 
         void ClickInvisible(ByEx byEx);
 
         void ClickInvisible(IWebElement element);
 
         bool Displayed(ByEx byEx);
-
-        bool Displayed(IWebElement element);
 
         bool Exists(ByEx byEx);
 
@@ -63,8 +55,6 @@ namespace SpecFlow.Extensions.WebDriver.PortalDriver
         void Select(IWebElement element);
 
         void SendKeys(ByEx byEx, string text);
-
-        void SendKeys(IWebElement element, string text);
 
         void Set(ByEx byEx, string text);
 

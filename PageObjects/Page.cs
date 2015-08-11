@@ -6,9 +6,11 @@ using System;
 
 namespace SpecFlow.Extensions.PageObjects
 {
-    public abstract class Page
-    {
-        public static IDriverFactory DriverFactory;
+	public abstract class Page
+	{
+		public static IDriverFactory DriverFactory;
+		private const string DllExtension = ".dll";
+		private const string SamePageSubSectionDelimiter = "_";
 
         public Page()
             : this(DriverFactory == null ? null : DriverFactory.GetDriver().WrappedDriver)
@@ -26,14 +28,19 @@ namespace SpecFlow.Extensions.PageObjects
             OpenQA.Selenium.Support.PageObjects.PageFactory.InitElements(this, retryingLocator);
         }
 
-        public string Uri
-        {
-            get
-            {
-                var assembly = System.Reflection.Assembly.GetAssembly(GetType()).ManifestModule.Name;
-                assembly = assembly.Substring(0, assembly.Length - ".dll".Length);
-                return GetType().FullName.Replace(assembly, string.Empty).Replace(".", @"/");
-            }
-        }
-    }
+		public string Uri
+		{
+			get
+			{
+				var assemblyName = System.Reflection.Assembly.GetAssembly(GetType()).ManifestModule.Name;
+				assemblyName = assemblyName.Substring(0, assemblyName.Length - DllExtension.Length);
+				int subsectionDivider = assemblyName.IndexOf(SamePageSubSectionDelimiter);
+				if (subsectionDivider >= 0)
+				{
+					assemblyName = assemblyName.Substring(0, (assemblyName.Length - subsectionDivider) + 1);
+				}
+				return GetType().FullName.Replace(assemblyName, string.Empty).Replace(".", @"/");
+			}
+		}
+	}
 }
