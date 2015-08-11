@@ -135,7 +135,6 @@ namespace SpecFlow.Extensions.PageObjects
                         return false;
                     }
                 }
-                return true;
             }
             return true;
         }
