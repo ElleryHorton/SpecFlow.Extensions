@@ -7,11 +7,6 @@ namespace SpecFlow.Extensions.PageObjects
 {
     public class LoginExamplePage : Page
     {
-        public LoginExamplePage(IPortalDriver driver)
-            : base(driver)
-        {
-        }
-
         [FindsBy(How = How.Custom, CustomFinderType = typeof(ById))]
         public IWebElement Username;
 

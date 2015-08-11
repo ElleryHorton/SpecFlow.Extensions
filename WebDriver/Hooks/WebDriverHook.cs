@@ -14,7 +14,6 @@ namespace SpecFlow.Extensions.WebDriver.Hooks
 
         public WebDriverHook(WebContext webContext)
         {
-            Page.DriverFactory = factory;
             webContext.PortalDriver = factory.GetDriver();
             _driver = (IWebDriver)webContext.PortalDriver;
         }

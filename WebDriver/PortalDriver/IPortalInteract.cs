@@ -13,8 +13,6 @@ namespace SpecFlow.Extensions.WebDriver.PortalDriver
 
         bool ClickChangesUrl(ByEx byEx);
 
-        bool ClickChangesUrl(IWebElement element);
-
         /*
          * These are convenience methods so that users of IPortalDriver do not have to access the Driver.Find methods
          *
@@ -42,24 +40,16 @@ namespace SpecFlow.Extensions.WebDriver.PortalDriver
 
         void ClickInvisible(ByEx byEx);
 
-        void ClickInvisible(IWebElement element);
-
         bool Displayed(ByEx byEx);
 
         bool Exists(ByEx byEx);
 
-        bool Exists(Func<IWebElement> pageObjectElement);
-
         void Select(ByEx byEx);
-
-        void Select(IWebElement element);
 
         void SendKeys(ByEx byEx, string text);
 
         void Set(ByEx byEx, string text);
 
         void Type(ByEx byEx, string text);
-
-        void Type(IWebElement element, string text);
     }
 }

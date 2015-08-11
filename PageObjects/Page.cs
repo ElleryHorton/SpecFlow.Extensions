@@ -8,25 +8,8 @@ namespace SpecFlow.Extensions.PageObjects
 {
 	public abstract class Page
 	{
-		public static IDriverFactory DriverFactory;
 		private const string DllExtension = ".dll";
 		private const string SamePageSubSectionDelimiter = "_";
-
-        public Page()
-            : this(DriverFactory == null ? null : DriverFactory.GetDriver().WrappedDriver)
-        {
-        }
-
-        public Page(IWrapsDriver WrapsDriver)
-            : this(WrapsDriver.WrappedDriver)
-        {
-        }
-
-        public Page(IWebDriver WebDriver)
-        {
-            IElementLocator retryingLocator = new RetryingElementLocator(WebDriver, TimeSpan.FromSeconds(5));
-            OpenQA.Selenium.Support.PageObjects.PageFactory.InitElements(this, retryingLocator);
-        }
 
 		public string Uri
 		{

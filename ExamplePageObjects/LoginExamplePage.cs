@@ -1,18 +1,14 @@
 ﻿using OpenQA.Selenium;
-using OpenQA.Selenium.Support.PageObjects;
-using SpecFlow.Extensions.Web.CustomBys;
+using SpecFlow.Extensions.Web.ByWrappers;
 
 namespace SpecFlow.Extensions.PageObjects
 {
-    public class LoginExamplePage : Page
+    public class LoginExamplePageByEx : Page
     {
-        [FindsBy(How = How.Custom, CustomFinderType = typeof(ById))]
-        public IWebElement Username;
+        public ByEx Username { get { return new ByEx(By.Id("Username")); } }
 
-        [FindsBy(How = How.Custom, CustomFinderType = typeof(ById))]
-        public IWebElement Password;
+        public ByEx Password { get { return new ByEx(By.Id("Password")); } }
 
-        [FindsBy(How = How.Custom, CustomFinderType = typeof(ByTagName.Text), Using = "input Log In")]
-        public IWebElement LoginButton;
+        public ByEx LoginButton { get { return new ByText(By.TagName("input"), "Log In"); } }
     }
 }
