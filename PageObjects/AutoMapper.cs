@@ -56,20 +56,23 @@ namespace SpecFlow.Extensions.PageObjects
 
         public static void Fill(object objSource, object objDestination, bool ignoreMissingMembers = true)
         {
+            _ignoreMissingMembers = ignoreMissingMembers;
             SetMembers(objSource, objDestination, GetMembers(objSource.GetType()), GetMembers(objDestination.GetType()),
-                GetMemberValue, SetMemberValue, ignoreMissingMembers);
+                GetMemberValue, SetMemberValue);
         }
 
         public static void Fill(object obj, Page page, bool ignoreMissingMembers = true)
         {
+            _ignoreMissingMembers = ignoreMissingMembers;
             SetMembers(obj, page, GetMembers(obj.GetType()), GetMembersByEx(page.GetType()),
-                GetMemberValue, SetMemberValueByEx, ignoreMissingMembers);
+                GetMemberValue, SetMemberValueByEx);
         }
 
         public static void Fill(Page page, object obj, bool ignoreMissingMembers = true)
         {
+            _ignoreMissingMembers = ignoreMissingMembers;
             SetMembers(page, obj, GetMembersByEx(page.GetType()), GetMembers(obj.GetType()),
-                GetMemberValueByEx, SetMemberValue, ignoreMissingMembers);
+                GetMemberValueByEx, SetMemberValue);
         }
 
         public static bool Verify(Table table, object context, Func<string, string, bool> compareMethod, bool ignoreMissingMembers = true)
@@ -232,10 +235,8 @@ namespace SpecFlow.Extensions.PageObjects
         private static void SetMembers(object objSource, object objDestination,
             IList<MemberWrapper> sourceMembers, IList<MemberWrapper> destinationMembers,
             Func<object, MemberWrapper, object> getMemberValue,
-            Action<MemberWrapper, object, string> setMemberValue,
-            bool ignoreMissingMembers)
+            Action<MemberWrapper, object, string> setMemberValue)
         {
-            _ignoreMissingMembers = ignoreMissingMembers;
             foreach (var member in sourceMembers)
             {
                 SetMember(objDestination, destinationMembers, member.Name, (getMemberValue).ToString(), setMemberValue);
