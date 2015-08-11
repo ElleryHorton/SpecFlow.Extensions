@@ -14,6 +14,7 @@ namespace SpecFlow.Extensions.WebDriver.PortalDriver
     {
         private readonly int _maxFindAttempts;
         private readonly int _maxTimeoutMilliseconds;
+        private const char ctrlA = '\u0001'; // ASCII code 1 for Ctrl-A
 
         public PortalWebDriver(IWebDriver driver, int maxFindAttempts = 3, int maxTimeoutMilliseconds = 2000)
             : base(driver)
@@ -131,7 +132,7 @@ namespace SpecFlow.Extensions.WebDriver.PortalDriver
             {
                 var cachedElement = Find(byEx);
                 cachedElement.Click();
-                cachedElement.Clear();
+                cachedElement.SendKeys(Convert.ToString(ctrlA));
                 cachedElement.SendKeys(text);
                 return true;
             });

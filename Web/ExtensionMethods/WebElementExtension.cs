@@ -19,7 +19,7 @@ namespace SpecFlow.Extensions.Web.ExtensionMethods
 
         public static string Value(this SelectElement e)
         {
-            return e.SelectedOption.Text;
+            return e.Options[System.Convert.ToInt32(e.WrappedElement.Value()) - 1].Text;
         }
     }
 }

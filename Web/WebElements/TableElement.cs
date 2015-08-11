@@ -26,10 +26,10 @@ namespace SpecFlow.Extensions.Web
         public IWebElement GetCell(int rowIndex, string header)
         {
             var row = _rows.ToArray()[rowIndex];
-            var columnElements = row.FindElements(By.TagName("th"));
+            var columnElements = row.FindElements(By.TagName("td")); // more likely than th
             if (columnElements.Count == 0)
             {
-                columnElements = row.FindElements(By.TagName("td"));
+                columnElements = row.FindElements(By.TagName("th"));
             }
             if (columnElements.Count == 0)
             {
@@ -42,12 +42,12 @@ namespace SpecFlow.Extensions.Web
         {
             foreach (var row in _rows)
             {
-                var e = row.FindElementOrNull(new ByText(By.TagName("th"), text, ComparisonMethod));
+                var e = row.FindElementOrNull(new ByText(By.TagName("td"), text, ComparisonMethod)); // more likely than th
                 if (e != null)
                 {
                     return e;
                 }
-                e = row.FindElementOrNull(new ByText(By.TagName("td"), text, ComparisonMethod));
+                e = row.FindElementOrNull(new ByText(By.TagName("th"), text, ComparisonMethod));
                 if (e != null)
                 {
                     return e;
@@ -60,13 +60,13 @@ namespace SpecFlow.Extensions.Web
         {
             foreach (var row in _rows)
             {
-                var byEx = new ByText(By.TagName("th"), text, ComparisonMethod);
+                var byEx = new ByText(By.TagName("td"), text, ComparisonMethod); // more likely than th
                 var e = row.FindElementOrNull(byEx);
                 if (e != null)
                 {
                     return byEx;
                 }
-                byEx = new ByText(By.TagName("td"), text, ComparisonMethod);
+                byEx = new ByText(By.TagName("th"), text, ComparisonMethod);
                 e = row.FindElementOrNull(byEx);
                 if (e != null)
                 {
@@ -149,7 +149,7 @@ namespace SpecFlow.Extensions.Web
 
         private static IReadOnlyCollection<IWebElement> GetTableHeaders(IWebElement element)
         {
-            var columnElements = element.FindElements(By.TagName("th"));
+            var columnElements = element.FindElements(By.TagName("th")); // less likely but only one hit on FindElements
             if (columnElements.Count == 0)
             {
                 var headerRow = element.FindElements(By.TagName("tr")).FirstOrDefault();
