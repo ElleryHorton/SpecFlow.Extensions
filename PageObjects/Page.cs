@@ -1,8 +1,4 @@
-﻿using OpenQA.Selenium;
-using OpenQA.Selenium.Internal;
-using OpenQA.Selenium.Support.PageObjects;
-using SpecFlow.Extensions.WebDriver;
-using System;
+﻿using System.Reflection;
 
 namespace SpecFlow.Extensions.PageObjects
 {
@@ -15,14 +11,20 @@ namespace SpecFlow.Extensions.PageObjects
 		{
 			get
 			{
-				var assemblyName = System.Reflection.Assembly.GetAssembly(GetType()).ManifestModule.Name;
+				// get assembly name without extension
+				var assemblyName = Assembly.GetAssembly(GetType()).ManifestModule.Name;
 				assemblyName = assemblyName.Substring(0, assemblyName.Length - DllExtension.Length);
-				int subsectionDivider = assemblyName.IndexOf(SamePageSubSectionDelimiter);
+
+				// get full class name up to underscore division
+				var fullClassName = GetType().FullName;
+				int subsectionDivider = fullClassName.IndexOf(SamePageSubSectionDelimiter);
 				if (subsectionDivider >= 0)
 				{
-					assemblyName = assemblyName.Substring(0, (assemblyName.Length - subsectionDivider) + 1);
+					fullClassName = fullClassName.Substring(0, (fullClassName.Length - subsectionDivider) + 1);
 				}
-				return GetType().FullName.Replace(assemblyName, string.Empty).Replace(".", @"/");
+
+				// remove assembly name from full class name and convert to Uri
+				return fullClassName.Replace(assemblyName, string.Empty).Replace(".", @"/");
 			}
 		}
 	}

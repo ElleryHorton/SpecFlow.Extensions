@@ -1,5 +1,4 @@
 ﻿using OpenQA.Selenium;
-using SpecFlow.Extensions.PageObjects;
 using TechTalk.SpecFlow;
 
 namespace SpecFlow.Extensions.WebDriver.Hooks

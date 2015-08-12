@@ -2,7 +2,6 @@
 using OpenQA.Selenium.Support.UI;
 using SpecFlow.Extensions.Web;
 using SpecFlow.Extensions.Web.ByWrappers;
-using System;
 using System.Collections.Generic;
 
 namespace SpecFlow.Extensions.WebDriver.PortalDriver

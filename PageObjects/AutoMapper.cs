@@ -75,49 +75,50 @@ namespace SpecFlow.Extensions.PageObjects
                 GetMemberValueByEx, SetMemberValue);
         }
 
-        public static bool Verify(Table table, object context, Func<string, string, bool> compareMethod, bool ignoreMissingMembers = true)
+        public static ComparisonMismatch Verify(Table table, object context, Func<string, string, bool> compareMethod, bool ignoreMissingMembers = true)
         {
             BuildCustomTable(table);
             return VerifyTableToObject(context, GetMembers, GetMemberValue, compareMethod);
         }
 
-        public static bool Verify(object context, Table table, Func<string, string, bool> compareMethod, bool ignoreMissingMembers = true)
+        public static ComparisonMismatch Verify(object context, Table table, Func<string, string, bool> compareMethod, bool ignoreMissingMembers = true)
         {
             BuildCustomTable(table);
             return VerifyObjectToTable(context, GetMembers, GetMemberValue, compareMethod);
         }
 
-        public static bool Verify(Table table, Page page, IPortalDriver driver, Func<string, string, bool> compareMethod, bool ignoreMissingMembers = true)
+        public static ComparisonMismatch Verify(Table table, Page page, IPortalDriver driver, Func<string, string, bool> compareMethod, bool ignoreMissingMembers = true)
         {
             _driver = driver;
             BuildCustomTable(table);
             return VerifyTableToObject(page, GetMembersByEx, GetMemberValueByEx, compareMethod);
         }
 
-        public static bool Verify(Page page, Table table, IPortalDriver driver, Func<string, string, bool> compareMethod, bool ignoreMissingMembers = true)
+        public static ComparisonMismatch Verify(Page page, Table table, IPortalDriver driver, Func<string, string, bool> compareMethod, bool ignoreMissingMembers = true)
         {
             _driver = driver;
             BuildCustomTable(table);
             return VerifyObjectToTable(page, GetMembersByEx, GetMemberValueByEx, compareMethod);
         }
 
-        public static bool Verify(object context, Page page, IPortalDriver driver, Func<string, string, bool> compareMethod, bool ignoreMissingMembers = true)
+        public static ComparisonMismatch Verify(object context, Page page, IPortalDriver driver, Func<string, string, bool> compareMethod, bool ignoreMissingMembers = true)
         {
             _driver = driver;
             return CompareMembersToMembers(context, page, GetMembers, GetMembersByEx, GetMemberValue, GetMemberValueByEx, compareMethod);
         }
 
-        public static bool Verify(Page page, object context, IPortalDriver driver, Func<string, string, bool> compareMethod, bool ignoreMissingMembers = true)
+        public static ComparisonMismatch Verify(Page page, object context, IPortalDriver driver, Func<string, string, bool> compareMethod, bool ignoreMissingMembers = true)
         {
             _driver = driver;
             return CompareMembersToMembers(page, context, GetMembersByEx, GetMembers, GetMemberValueByEx, GetMemberValue, compareMethod);
         }
 
-        private static bool CompareMembersToMembers(object objSource, object objDestination,
+        private static ComparisonMismatch CompareMembersToMembers(object objSource, object objDestination,
             Func<Type, IList<MemberWrapper>> getSourceMembers, Func<Type, IList<MemberWrapper>> getDestinationMembers,
             Func<object, MemberWrapper, object> getSourceMemberValue, Func<object, MemberWrapper, object> getDestinationMemberValue,
             Func<string, string, bool> compareMethod)
         {
+            var comparison = new ComparisonMismatch();
             foreach (var member in getSourceMembers(objSource.GetType()))
             {
                 var foundMember = getDestinationMembers(objDestination.GetType()).FirstOrDefault(m => m.Name == member.Name);
@@ -125,25 +126,23 @@ namespace SpecFlow.Extensions.PageObjects
                 {
                     if (!_ignoreMissingMembers)
                     {
-                        throw new MissingMemberException();
+                        comparison.Add(string.Format("Missing member '{0}'", member.Name));
                     } // else do nothing
                 }
                 else
                 {
-                    if (!compareMethod(getSourceMemberValue(objSource, member).ToString(), getDestinationMemberValue(objDestination, foundMember).ToString()))
-                    {
-                        return false;
-                    }
+                    comparison.Compare(getSourceMemberValue(objSource, member).ToString(), getDestinationMemberValue(objDestination, foundMember).ToString(), compareMethod);
                 }
             }
-            return true;
+            return comparison;
         }
 
-        private static bool VerifyTableToObject(object obj,
+        private static ComparisonMismatch VerifyTableToObject(object obj,
             Func<Type, IList<MemberWrapper>> getMembers,
             Func<object, MemberWrapper, object> getMemberValue,
             Func<string, string, bool> compareMethod)
         {
+            var comparison = new ComparisonMismatch();
             foreach (var row in Rows)
             {
                 foreach (var header in Headers)
@@ -153,38 +152,33 @@ namespace SpecFlow.Extensions.PageObjects
                     {
                         if (!_ignoreMissingMembers)
                         {
-                            throw new MissingMemberException();
+                            comparison.Add(string.Format("Missing member '{0}'", header));
                         } // else do nothing
                     }
                     else
                     {
-                        if (!compareMethod(getMemberValue(obj, foundMember).ToString(), row[header]))
-                        {
-                            return false;
-                        }
+                        comparison.Compare(getMemberValue(obj, foundMember).ToString(), row[header], compareMethod);
                     }
                 }
             }
-            return true;
+            return comparison;
         }
 
-        private static bool VerifyObjectToTable(object obj,
+        private static ComparisonMismatch VerifyObjectToTable(object obj,
             Func<Type, IList<MemberWrapper>> getMembers,
             Func<object, MemberWrapper, object> getMemberValue,
             Func<string, string, bool> compareMethod)
         {
             var members = getMembers(obj.GetType());
+            var comparison = new ComparisonMismatch();
             foreach (var row in Rows)
             {
                 foreach (var member in members)
                 {
-                    if (!compareMethod(getMemberValue(obj, member).ToString(), row[member.Name]))
-                    {
-                        return false;
-                    }
+                    comparison.Compare(getMemberValue(obj, member).ToString(), row[member.Name], compareMethod);
                 }
             }
-            return true;
+            return comparison;
         }
 
         private static object GetMemberValue(object obj, MemberWrapper member)

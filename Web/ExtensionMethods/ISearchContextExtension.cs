@@ -1,7 +1,6 @@
 ﻿using OpenQA.Selenium;
 using OpenQA.Selenium.Support.UI;
 using SpecFlow.Extensions.Web.ByWrappers;
-using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
