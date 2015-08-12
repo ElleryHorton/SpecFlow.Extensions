@@ -12,16 +12,8 @@ using TechTalk.SpecFlow;
 namespace SpecFlow.Extensions.PageObjects
 {
     [Binding]
-    public static class AutoMapper
+    public static class AutoMapper<T> where T : Macro, new()
     {
-        public const string Delimiter = "!";
-        public const string RandomMacro = "!Random";
-        public const string RandomShortMacro = "!RandomShort";
-        public const string RandomHashMacro = "!Hash";
-        public const string DataMacro = "!Data";
-        public const string EmailMacro = "!Email";
-        public const string SkipMacro = "!Skip";
-
         public static IList<string> Headers;
         public static IList<IDictionary<string, string>> Rows;
         private static IPortalDriver _driver;
@@ -286,89 +278,10 @@ namespace SpecFlow.Extensions.PageObjects
 
         private static void BuildCustomTable(Table table)
         {
-            Headers = new List<string>();
-            Rows = new List<IDictionary<string, string>>();
-            var LookupTable = new Dictionary<string, string>();
-            foreach (var header in table.Header)
-            {
-                if (header.Contains(Delimiter))
-                {
-                    bool skip = false;
-                    var substring = header.Substring(header.LastIndexOf(Delimiter));
-                    switch (substring)
-                    {
-                        case RandomMacro:
-                            foreach (var row in table.Rows)
-                            {
-                                row[header] = row[header].Randomize();
-                            }
-                            break;
-
-                        case RandomShortMacro:
-                            foreach (var row in table.Rows)
-                            {
-                                row[header] = row[header].RandomizeNoTimestamp();
-                            }
-                            break;
-
-                        case RandomHashMacro:
-                            foreach (var row in table.Rows)
-                            {
-                                row[header] = row[header].RandomizeHashOnly();
-                            }
-                            break;
-
-                        case DataMacro:
-                            foreach (var row in table.Rows)
-                            {
-                                row[header] = Tester.TestDataPath(row[header]);
-                            }
-                            break;
-
-                        case EmailMacro:
-                            foreach (var row in table.Rows)
-                            {
-                                row[header] = Tester.Email;
-                            }
-                            break;
-
-                        case SkipMacro:
-                            skip = true;
-                            break;
-
-                        default: // macro not supported, do nothing
-                            break;
-                    }
-                    if (skip) // don't include in Headers
-                    {
-                        var newHeader = header.Replace(" ", string.Empty);
-                        LookupTable.Add(header, newHeader);
-                    }
-                    else
-                    {
-                        var newHeader = header.Substring(0, header.Length - substring.Length)
-                            .TrimEnd()
-                            .Replace(" ", string.Empty);
-                        Headers.Add(newHeader);
-                        LookupTable.Add(header, newHeader);
-                    }
-                }
-                else
-                {
-                    var newHeader = header.Replace(" ", string.Empty);
-                    Headers.Add(newHeader);
-                    LookupTable.Add(header, newHeader);
-                }
-            }
-            foreach (var row in table.Rows)
-            {
-                var dict = new Dictionary<string, string>();
-                foreach (var pair in row)
-                {
-                    dict.Add(LookupTable[pair.Key], pair.Value);
-                }
-                Rows.Add(dict);
-            }
+            T macro = new T();
+            macro.Format(table);
+            Headers = macro.Headers;
+            Rows = macro.Rows;
         }
     }
 }

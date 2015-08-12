@@ -27,11 +27,7 @@ namespace SpecFlow.Extensions.WebDriver.PortalDriver
 
         SelectElement FindSelect(ByEx byEx);
 
-        SelectElement FindSelect(IWebElement element);
-
         TableElement FindTable(ByEx byEx);
-
-        TableElement FindTable(IWebElement element);
 
         void Clear(ByEx byEx);
 
@@ -44,6 +40,8 @@ namespace SpecFlow.Extensions.WebDriver.PortalDriver
         bool Exists(ByEx byEx);
 
         void Select(ByEx byEx);
+
+        void Select(ByEx byEx, string text);
 
         void SendKeys(ByEx byEx, string text);
 

@@ -51,19 +51,9 @@ namespace SpecFlow.Extensions.WebDriver.PortalDriver
             return WrappedDriver.FindSelect(byEx);
         }
 
-        public SelectElement FindSelect(IWebElement element)
-        {
-            return new SelectElement(element);
-        }
-
         public TableElement FindTable(ByEx byEx)
         {
             return WrappedDriver.FindTable(byEx);
-        }
-
-        public TableElement FindTable(IWebElement element)
-        {
-            return new TableElement(element);
         }
 
         public void Clear(ByEx byEx)
@@ -114,6 +104,16 @@ namespace SpecFlow.Extensions.WebDriver.PortalDriver
                 Find(byEx).Click();
                 WaitForPageLoad();
                 return Find(byEx).Selected;
+            });
+        }
+
+        public void Select(ByEx byEx, string text)
+        {
+            TryAgain(() =>
+            {
+                FindSelect(byEx).SelectByText(text);
+                WaitForPageLoad();
+                return true;
             });
         }
 

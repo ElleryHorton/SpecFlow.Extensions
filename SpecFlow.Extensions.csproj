@@ -61,6 +61,7 @@
     <Compile Include="PageObjects\AssemblyContainsPagesAttribute.cs" />
     <Compile Include="PageObjects\AutoMapper.cs" />
     <Compile Include="PageObjects\LoginExamplePage.cs" />
+    <Compile Include="PageObjects\Macro.cs" />
     <Compile Include="PageObjects\Page.cs" />
     <Compile Include="PageObjects\PageFactory.cs" />
     <Compile Include="WebDriver\ExampleDriverFactory.cs" />

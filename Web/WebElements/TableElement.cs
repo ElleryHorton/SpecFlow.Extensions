@@ -1,4 +1,5 @@
 ﻿using OpenQA.Selenium;
+using SpecFlow.Extensions.PageObjects;
 using SpecFlow.Extensions.Web.ByWrappers;
 using SpecFlow.Extensions.Web.ExtensionMethods;
 using System;
@@ -91,10 +92,50 @@ namespace SpecFlow.Extensions.Web
             get { return _headerToIndex.Count; }
         }
 
+        public List<string> GetRowText(int row)
+        {
+            List<string> list = new List<string>();
+
+            foreach (var header in _headerToIndex.Keys)
+            {
+                list.Add(GetCell(row, header).Text);
+            }
+
+            return list;
+        }
+
+        public ComparisonMismatch Contains(List<string[]> table, int startIndex=1)
+        {
+            ComparisonMismatch comparison = new ComparisonMismatch();
+            comparison.IsTrue(table.Count <= RowCount, "Expected row count exceeds actual row count");
+
+            for (int row = startIndex; row < table.Count; row++)
+            {
+                bool isFound = true;
+                for (int actualRow = 1; actualRow < RowCount; actualRow++)
+                {
+                    isFound = true;
+                    var colCount = table[row].Count();
+                    for (int col = 0; col < colCount; col++)
+                    {
+                        string header = table[0][col];
+                        string actualCellText = GetCell(actualRow, header).Text;
+                        isFound = isFound & (table[row][col] != actualCellText);
+                        if (!isFound)
+                        {
+                            break;
+                        }
+                    }
+                }
+                comparison.IsTrue(isFound, string.Format("Not found |{0}|", string.Join("|", table[row])));
+            }
+            return comparison;
+        }
+
         public ComparisonMismatch CompareToTable(List<string[]> table, int startIndex=1)
         {
             ComparisonMismatch comparison = new ComparisonMismatch();
-            comparison.Compare(table.Count, RowCount, (int a, int b) => (a == b), "Row counts do not match");
+            comparison.IsTrue(table.Count == RowCount, "Row counts do not match");
 
             for (int row = startIndex; row < Math.Min(table.Count, RowCount); row++)
             {
@@ -109,37 +150,22 @@ namespace SpecFlow.Extensions.Web
             return comparison;
         }
 
-        public List<string> GetRowText(int row)
+        public ComparisonMismatch CompareToTable(Table table, int startIndex=1)
         {
-            List<string> list = new List<string>();
-
-            foreach(var header in _headerToIndex.Keys)
-            {
-                list.Add(GetCell(row, header).Text);
-            }
-
-            return list;
-        }
-
-        public bool CompareToTable(Table table, int startIndex=1)
-        {
-            if (table.Rows.Count != RowDataCount)
-            {
-                return false;
-            }
+            ComparisonMismatch comparison = new ComparisonMismatch();
+            comparison.IsTrue(table.Rows.Count == RowDataCount, "Row counts do not match");
 
             int rowIndex = startIndex;
-            bool isExact = true;
             foreach (var row in table.Rows)
             {
                 foreach (var header in table.Header)
                 {
                     string actualCellText = GetCell(rowIndex, header).Text;
-                    isExact = isExact && (row[header] == actualCellText);
+                    comparison.IsTrue(row[header] == actualCellText, "Cell text does not match");
                 }
                 rowIndex++;
             }
-            return isExact;
+            return comparison;
         }
 
         private static IReadOnlyCollection<IWebElement> GetTableHeaders(IWebElement element)
