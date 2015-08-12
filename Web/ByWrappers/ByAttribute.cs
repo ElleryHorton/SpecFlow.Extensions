@@ -8,10 +8,7 @@ namespace SpecFlow.Extensions.Web.ByWrappers
     public class ByAttribute : ByEx
     {
         public Dictionary<string, string> Attributes { get; private set; }
-
         public Func<string, string, bool> ComparisonMethod;
-
-        public bool hasAttributes { get { return (Attributes == null) ? false : Attributes.Count > 0; } }
 
         public ByAttribute(By by, string attributeName, string attributeValue, Input input = Input.Type, bool visibleOnly = true)
             : this(by, attributeName, attributeValue, string.Equals, input, visibleOnly)

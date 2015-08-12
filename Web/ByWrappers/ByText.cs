@@ -10,8 +10,6 @@ namespace SpecFlow.Extensions.Web.ByWrappers
         public string Text = string.Empty;
         public Func<string, string, bool> ComparisonMethod;
 
-        public bool hasText { get { return !string.IsNullOrEmpty(Text); } }
-
         public ByText(By by, string text, Input input = Input.Type, bool visibleOnly = true)
             : this(by, text, string.Equals, input, visibleOnly)
         {

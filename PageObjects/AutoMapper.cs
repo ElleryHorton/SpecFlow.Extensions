@@ -131,7 +131,7 @@ namespace SpecFlow.Extensions.PageObjects
                 }
                 else
                 {
-                    comparison.Compare(getSourceMemberValue(objSource, member).ToString(), getDestinationMemberValue(objDestination, foundMember).ToString(), compareMethod);
+                    comparison.Compare(getSourceMemberValue(objSource, member).ToString(), getDestinationMemberValue(objDestination, foundMember).ToString(), compareMethod, "CompareMembersToMembers");
                 }
             }
             return comparison;
@@ -157,7 +157,7 @@ namespace SpecFlow.Extensions.PageObjects
                     }
                     else
                     {
-                        comparison.Compare(getMemberValue(obj, foundMember).ToString(), row[header], compareMethod);
+                        comparison.Compare(row[header], getMemberValue(obj, foundMember).ToString(), compareMethod, "VerifyTableToObject");
                     }
                 }
             }
@@ -175,7 +175,7 @@ namespace SpecFlow.Extensions.PageObjects
             {
                 foreach (var member in members)
                 {
-                    comparison.Compare(getMemberValue(obj, member).ToString(), row[member.Name], compareMethod);
+                    comparison.Compare(getMemberValue(obj, member).ToString(), row[member.Name], compareMethod, "VerifyObjectToTable");
                 }
             }
             return comparison;

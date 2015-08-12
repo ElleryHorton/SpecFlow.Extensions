@@ -38,7 +38,7 @@ namespace SpecFlow.Extensions.Web
             return columnElements.ToArray()[_headerToIndex[header]];
         }
 
-        public IWebElement GetCell(string header, string text, Func<string, string, bool> ComparisonMethod)
+        public IWebElement GetCell(string header, string text, Func<string,string,bool> ComparisonMethod)
         {
             foreach (var row in _rows)
             {
@@ -91,11 +91,29 @@ namespace SpecFlow.Extensions.Web
             get { return _headerToIndex.Count; }
         }
 
+        public ComparisonMismatch CompareToTable(List<string[]> table, int startIndex=1)
+        {
+            ComparisonMismatch comparison = new ComparisonMismatch();
+            comparison.Compare(table.Count, RowCount, (int a, int b) => (a == b), "Row counts do not match");
+
+            for (int row = startIndex; row < Math.Min(table.Count, RowCount); row++)
+            {
+                var colCount = table[row].Count();
+                for (int col = 0; col < colCount; col++)
+                {
+                    string header = table[0][col];
+                    string actualCellText = GetCell(row, header).Text;
+                    comparison.Compare(table[row][col], actualCellText, "Cell text does not match");
+                }
+            }
+            return comparison;
+        }
+
         public List<string> GetRowText(int row)
         {
             List<string> list = new List<string>();
 
-            foreach (var header in _headerToIndex.Keys)
+            foreach(var header in _headerToIndex.Keys)
             {
                 list.Add(GetCell(row, header).Text);
             }
@@ -103,30 +121,7 @@ namespace SpecFlow.Extensions.Web
             return list;
         }
 
-        public bool CompareToTable(List<string[]> table, int startIndex = 1)
-        {
-            if (table.Count != RowCount)
-            {
-                return false;
-            }
-
-            for (int row = startIndex; row < table.Count; row++)
-            {
-                var colCount = table[row].Count();
-                for (int col = 0; col < colCount; col++)
-                {
-                    string header = table[0][col];
-                    string actualCellText = GetCell(row, header).Text;
-                    if (table[row][col] != actualCellText)
-                    {
-                        return false;
-                    }
-                }
-            }
-            return true;
-        }
-
-        public bool CompareToTable(Table table, int startIndex = 1)
+        public bool CompareToTable(Table table, int startIndex=1)
         {
             if (table.Rows.Count != RowDataCount)
             {
