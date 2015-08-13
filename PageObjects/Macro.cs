@@ -13,6 +13,7 @@ namespace SpecFlow.Extensions.PageObjects
         public const string RandomHashMacro = "!Hash";
         public const string DataMacro = "!Data";
         public const string EmailMacro = "!Email";
+        public const string PhoneMacro = "!Phone";
         public const string SkipMacro = "!Skip";
 
         public static Dictionary<string, Func<string, string>> MacroMethods = new Dictionary<string, Func<string, string>>() {
@@ -21,6 +22,7 @@ namespace SpecFlow.Extensions.PageObjects
             {RandomHashMacro, (string s) => (s.RandomizeHashOnly())},
             {DataMacro, (string s) => (Tester.TestDataPath(s))},
             {EmailMacro, (string s) => (Tester.Email)},
+            {PhoneMacro, (string s) => (StringRandomize.GenerateRandomNumber())},
             {SkipMacro, (string s) => (null) }
         };
 

@@ -5,30 +5,30 @@ namespace SpecFlow.Extensions.Framework.ExtensionMethods
 {
     public static class StringRandomize
     {
+        private const string chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
+        private const string digits = "1234567890";
         private static Random _random = new Random();
 
         public static string FeatureHash { get; set; }
-
         public static string ScenarioHash { get; set; }
-
         public static string TesterHash { get; set; }
 
-        public static string Randomize(this string original, int hashLength = 4, string hashDelimit = "-")
+        public static string Randomize(this string original, uint hashLength = 4, string hashDelimit = "-")
         {
             return original.RandomizeSelector(AppendFullHash, hashLength, hashDelimit);
         }
 
-        public static string RandomizeNoTimestamp(this string original, int hashLength = 4, string hashDelimit = "-")
+        public static string RandomizeNoTimestamp(this string original, uint hashLength = 4, string hashDelimit = "-")
         {
             return original.RandomizeSelector(AppendShortHash, hashLength, hashDelimit);
         }
 
-        public static string RandomizeHashOnly(this string original, int hashLength = 4, string hashDelimit = "-")
+        public static string RandomizeHashOnly(this string original, uint hashLength = 4, string hashDelimit = "-")
         {
             return original.RandomizeSelector(AppendHashOnly, hashLength, hashDelimit);
         }
 
-        private static string RandomizeSelector(this string original, Func<string, int, string, string> randomize, int hashLength, string hashDelimit)
+        private static string RandomizeSelector(this string original, Func<string, uint, string, string> randomize, uint hashLength, string hashDelimit)
         {
             if (string.IsNullOrEmpty(original))
             {
@@ -44,17 +44,17 @@ namespace SpecFlow.Extensions.Framework.ExtensionMethods
             }
         }
 
-        private static string AppendFullHash(this string original, int hashLength, string hashDelimit)
+        private static string AppendFullHash(this string original, uint hashLength, string hashDelimit)
         {
             return string.Format("{1}{2}{0}{3}{0}{4}", hashDelimit, original, GenerateTesterTestHash(hashDelimit), DateTime.Now.ToString("yyyyMMddHHmmssfff"), GenerateRandomHash(hashLength));
         }
 
-        private static string AppendShortHash(this string original, int hashLength, string hashDelimit)
+        private static string AppendShortHash(this string original, uint hashLength, string hashDelimit)
         {
             return string.Format("{1}{2}{0}{3}", hashDelimit, original, GenerateTesterTestHash(hashDelimit), GenerateRandomHash(hashLength));
         }
 
-        private static string AppendHashOnly(this string original, int hashLength, string hashDelimit)
+        private static string AppendHashOnly(this string original, uint hashLength, string hashDelimit)
         {
             return string.Format("{1}{0}{2}", hashDelimit, original, GenerateRandomHash(hashLength));
         }
@@ -77,15 +77,14 @@ namespace SpecFlow.Extensions.Framework.ExtensionMethods
             return hash;
         }
 
-        private static string RandomizeHash(this string hashString, int hashLength, string hashDelimit)
+        private static string RandomizeHash(this string hashString, uint hashLength, string hashDelimit)
         {
             return hashString.Substring(0, (hashString.Length - (hashString.Length - hashString.LastIndexOf(hashDelimit)) + 1)) + GenerateRandomHash(hashLength);
         }
 
-        public static string GenerateRandomHash(int hashLength = 4)
+        public static string GenerateRandomHash(uint hashLength = 4)
         {
             StringBuilder sb = new StringBuilder();
-            var chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
             for (int i = 0; i < hashLength; i++)
             {
                 sb.Append(chars[_random.Next(chars.Length)]);
@@ -93,7 +92,23 @@ namespace SpecFlow.Extensions.Framework.ExtensionMethods
             return sb.ToString();
         }
 
-        private static bool HasHash(this string hashString, int hashLength, string hashDelimit)
+        public static string GenerateRandomNumber(uint length = 10)
+        {
+            if (length == 0)
+            {
+                return string.Empty;
+            }
+
+            StringBuilder sb = new StringBuilder();
+            sb.Append(digits[_random.Next(digits.Length - 1)]);
+            for (int i = 1; i < length; i++)
+            {
+                sb.Append(digits[_random.Next(digits.Length)]);
+            }
+            return sb.ToString();
+        }
+
+        private static bool HasHash(this string hashString, uint hashLength, string hashDelimit)
         {
             return hashString.Contains(hashDelimit) && (hashString.LastIndexOf(hashDelimit) + hashDelimit.Length + hashLength == hashString.Length);
         }
