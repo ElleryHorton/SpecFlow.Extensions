@@ -41,11 +41,13 @@ namespace SpecFlow.Extensions.WebDriver.PortalDriver
 
         public IWebElement Find(ByEx byEx)
         {
+            WrappedDriver.WaitForPageLoad();
             return WrappedDriver.FindElement(byEx);
         }
 
         public IEnumerable<IWebElement> FindAll(ByEx byEx)
         {
+            WrappedDriver.WaitForPageLoad();
             return WrappedDriver.FindElements(byEx);
         }
 
