@@ -13,7 +13,7 @@ namespace SpecFlow.Extensions.Database
         public const string DATABASE_TEST_TWO = "Test.Two";
 
         private string _connectionString;
-        private int _databaseDelayMilliseconds = 1000;
+        private readonly int _databaseDelayMilliseconds = 1000;
 
         public DatabaseHelper(string databaseName)
         {

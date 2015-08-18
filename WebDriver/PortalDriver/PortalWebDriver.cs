@@ -12,11 +12,14 @@ namespace SpecFlow.Extensions.WebDriver.PortalDriver
 {
     public abstract class PortalWebDriver : WrapWebDriver, IPortalInteract, IWebDriver, IWrapsDriver
     {
+        private const int MAX_RETRIES = 3;
+        private const int MAX_DELAY_MS = 1000;
+
         private readonly int _maxFindAttempts;
         private readonly int _maxTimeoutMilliseconds;
         private const char ctrlA = '\u0001'; // ASCII code 1 for Ctrl-A
 
-        public PortalWebDriver(IWebDriver driver, int maxFindAttempts = 3, int maxTimeoutMilliseconds = 2000)
+        public PortalWebDriver(IWebDriver driver, int maxFindAttempts = MAX_RETRIES, int maxTimeoutMilliseconds = MAX_DELAY_MS)
             : base(driver)
         {
             _maxFindAttempts = maxFindAttempts;
@@ -180,7 +183,7 @@ namespace SpecFlow.Extensions.WebDriver.PortalDriver
                 tryCount++;
                 if (!success)
                 {
-                    Thread.Sleep(1000);
+                    Thread.Sleep(MAX_DELAY_MS);
                 }
             }
 

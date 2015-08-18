@@ -10,6 +10,7 @@ namespace SpecFlow.Extensions.Web.ExtensionMethods
     public static class ISearchContextExtension
     {
         private const int MAX_RETRIES = 3;
+        private const int MAX_DELAY_MS = 1000;
 
         public static bool HasChild(this ISearchContext iFind, ByEx byEx)
         {
@@ -28,7 +29,7 @@ namespace SpecFlow.Extensions.Web.ExtensionMethods
                 tryCount++;
                 if (e == null)
                 {
-                    Thread.Sleep(1000);
+                    Thread.Sleep(MAX_DELAY_MS);
                 }
             }
 
@@ -50,7 +51,7 @@ namespace SpecFlow.Extensions.Web.ExtensionMethods
 
         public static IEnumerable<IWebElement> FindElements(this ISearchContext iFind, ByEx byEx)
         {
-            return FindAll(iFind, byEx, MAX_RETRIES, 2000);
+            return FindAll(iFind, byEx, MAX_RETRIES, MAX_DELAY_MS);
         }
 
         private static IEnumerable<IWebElement> FindAll(ISearchContext iFind, ByEx byEx, int retries, int milliseconds)
@@ -77,7 +78,7 @@ namespace SpecFlow.Extensions.Web.ExtensionMethods
 
             while ((tryCount < MAX_RETRIES) && e.Options.Count == 0)
             {
-                Thread.Sleep(1000);
+                Thread.Sleep(MAX_DELAY_MS);
                 e = new SelectElement(iFind.FindElement(byEx));
                 tryCount++;
             }
