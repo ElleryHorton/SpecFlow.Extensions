@@ -7,7 +7,7 @@ using System.Threading;
 
 namespace SpecFlow.Extensions.Database
 {
-    public class DatabaseHelper
+    internal class DatabaseHelper
     {
         public const string DATABASE_TEST_ONE = "Test.One";
         public const string DATABASE_TEST_TWO = "Test.Two";
@@ -33,7 +33,7 @@ namespace SpecFlow.Extensions.Database
 
         public int Count(string tableName)
         {
-            return ExecuteScalar(string.Format("SELECT COUNT(*) FROM {0}", tableName));
+            return ExecuteScalarInt(string.Format("SELECT COUNT(*) FROM {0}", tableName));
         }
 
         private string BuildWhereParameters(List<SQL> whereParameters)
@@ -77,13 +77,25 @@ namespace SpecFlow.Extensions.Database
         public int GetIntegerValue(string valueName, string tableName, SQL whereParameter)
         {
             Thread.Sleep(_databaseDelayMilliseconds);
-            return ExecuteScalar(GetSelectSql(valueName, tableName, whereParameter.ToString()));
+            return ExecuteScalarInt(GetSelectSql(valueName, tableName, whereParameter.ToString()));
         }
 
         public int GetIntegerValue(string valueName, string tableName, List<SQL> whereParameters = null)
         {
             Thread.Sleep(_databaseDelayMilliseconds);
-            return ExecuteScalar(GetSelectSql(valueName, tableName, BuildWhereParameters(whereParameters)));
+            return ExecuteScalarInt(GetSelectSql(valueName, tableName, BuildWhereParameters(whereParameters)));
+        }
+
+        public string GetStringValue(string valueName, string tableName, SQL whereParameter)
+        {
+            Thread.Sleep(_databaseDelayMilliseconds);
+            return ExecuteScalarString(GetSelectSql(valueName, tableName, whereParameter.ToString()));
+        }
+
+        public string GetStringValue(string valueName, string tableName, List<SQL> whereParameters = null)
+        {
+            Thread.Sleep(_databaseDelayMilliseconds);
+            return ExecuteScalarString(GetSelectSql(valueName, tableName, BuildWhereParameters(whereParameters)));
         }
 
         public DataTable Select(string tableName, SQL whereParameter)
@@ -191,19 +203,29 @@ namespace SpecFlow.Extensions.Database
             }
         }
 
-        private int ExecuteScalar(string sql)
+        private object ExecuteScalar(string sql)
         {
-            int value;
+            object value;
             using (SqlConnection sqlConnection = new SqlConnection(_connectionString))
             {
                 sqlConnection.Open();
                 using (SqlCommand sqlCommand = new SqlCommand(sql, sqlConnection))
                 {
                     sqlCommand.CommandText = sql;
-                    value = (int)sqlCommand.ExecuteScalar();
+                    value = sqlCommand.ExecuteScalar();
                 }
             }
             return value;
+        }
+
+        private int ExecuteScalarInt(string sql)
+        {
+            return (int)ExecuteScalar(sql);
+        }
+
+        private string ExecuteScalarString(string sql)
+        {
+            return ExecuteScalar(sql).ToString();
         }
 
         private DataSet Execute(string sql)

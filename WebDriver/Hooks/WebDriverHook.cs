@@ -1,4 +1,5 @@
 ﻿using OpenQA.Selenium;
+using SpecFlow.Extensions.PageObjects;
 using TechTalk.SpecFlow;
 
 namespace SpecFlow.Extensions.WebDriver.Hooks
@@ -13,6 +14,7 @@ namespace SpecFlow.Extensions.WebDriver.Hooks
 
         public WebDriverHook(WebContext webContext)
         {
+			PageFactory.DriverFactory = factory;
             webContext.PortalDriver = factory.GetDriver();
             _driver = (IWebDriver)webContext.PortalDriver;
         }

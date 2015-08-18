@@ -1,4 +1,7 @@
-﻿using SpecFlow.Extensions.WebDriver.PortalDriver;
+﻿using OpenQA.Selenium;
+using OpenQA.Selenium.Support.PageObjects;
+using SpecFlow.Extensions.WebDriver;
+using SpecFlow.Extensions.WebDriver.PortalDriver;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -9,7 +12,8 @@ namespace SpecFlow.Extensions.PageObjects
 {
     public static class PageFactory
     {
-        private static Dictionary<Type, Page> _pageBag = new Dictionary<Type, Page>();
+        private static Dictionary<Type, object> _pageBag = new Dictionary<Type, object>();
+        public static IDriverFactory DriverFactory;
 
         public static Page GetPage(string pageName)
         {
@@ -41,13 +45,13 @@ namespace SpecFlow.Extensions.PageObjects
         {
             if (_pageBag.Keys.Contains(pageType))
             {
-                return _pageBag[pageType];
+                return (Page)_pageBag[pageType];
             }
             else
             {
-                Page newPage = (Page)Activator.CreateInstance(pageType);
+                var newPage = Activator.CreateInstance(pageType);
                 _pageBag.Add(pageType, newPage);
-                return newPage;
+                return (Page)newPage;
             }
         }
 
@@ -69,16 +73,7 @@ namespace SpecFlow.Extensions.PageObjects
 
         public static T Get<T>() where T : Page
         {
-            if (_pageBag.Keys.Contains(typeof(T)))
-            {
-                return (T)_pageBag[typeof(T)];
-            }
-            else
-            {
-                var newPage = (T)Activator.CreateInstance<T>();
-                _pageBag.Add(typeof(T), newPage);
-                return newPage;
-            }
+            return Get<T>(DriverFactory.GetDriver());
         }
 
         public static T Get<T>(IPortalDriver portalDriver) where T : Page
@@ -90,9 +85,16 @@ namespace SpecFlow.Extensions.PageObjects
             else
             {
                 var newPage = (T)Activator.CreateInstance(typeof(T), portalDriver);
-                _pageBag.Add(typeof(T), newPage);
+                InitializePage(newPage, portalDriver);
                 return newPage;
             }
+        }
+
+        private static void InitializePage(Page page, IPortalDriver pDriver)
+        {
+            IElementLocator retryingLocator = new RetryingElementLocator(pDriver.WrappedDriver, TimeSpan.FromSeconds(5));
+            OpenQA.Selenium.Support.PageObjects.PageFactory.InitElements(page, retryingLocator);
+            _pageBag.Add(page.GetType(), page);
         }
     }
 }

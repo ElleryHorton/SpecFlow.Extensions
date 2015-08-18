@@ -6,7 +6,7 @@ namespace SpecFlow.Extensions.Framework.Helpers
     {
         public static string Name(string stateAbbreviation)
         {
-            switch (stateAbbreviation)
+            switch (stateAbbreviation.ToUpper())
             {
                 case "AL":
                     return "Alabama";
@@ -184,6 +184,69 @@ namespace SpecFlow.Extensions.Framework.Helpers
 
                 case "WY":
                     return "Wyoming";
+
+                // already a name
+                case "ALABAMA":
+                case "ALASKA":
+                case "AMERICAN SAMOA":
+                case "ARIZONA":
+                case "ARKANSAS":
+                case "CALIFORNIA":
+                case "COLORADO":
+                case "CONNECTICUT":
+                case "DELAWARE":
+                case "DISTRICT OF COLUMBIA":
+                case "FEDERATED STATES OF MICRONESIA":
+                case "FLORIDA":
+                case "GEORGIA":
+                case "GUAM":
+                case "HAWAII":
+                case "IDAHO":
+                case "ILLINOIS":
+                case "INDIANA":
+                case "IOWA":
+                case "KANSAS":
+                case "KENTUCKY":
+                case "LOUISIANA":
+                case "MAINE":
+                case "MARSHALL ISLANDS":
+                case "MARYLAND":
+                case "MASSACHUSETTS":
+                case "MICHIGAN":
+                case "MINNESOTA":
+                case "MISSISSIPPI":
+                case "MISSOURI":
+                case "MONTANA":
+                case "NEBRASKA":
+                case "NEVADA":
+                case "NEW HAMPSHIRE":
+                case "NEW JERSEY":
+                case "NEW MEXICO":
+                case "NEW YORK":
+                case "NORTH CAROLINA":
+                case "NORTH DAKOTA":
+                case "NORTHERN MARIANA ISLANDS":
+                case "OHIO":
+                case "OKLAHOMA":
+                case "OREGON":
+                case "PALAU":
+                case "PENNSYLVANIA":
+                case "PUERTO RICO":
+                case "RHODE ISLAND":
+                case "SOUTH CAROLINA":
+                case "SOUTH DAKOTA":
+                case "TENNESSEE":
+                case "TEXAS":
+                case "UTAH":
+                case "VERMONT":
+                case "VIRGIN ISLANDS":
+                case "VIRGINIA":
+                case "WASHINGTON":
+                case "WEST VIRGINIA":
+                case "WISCONSIN":
+                case "WYOMING":
+                    return stateAbbreviation.ToUpper();
+
             }
 
             throw new NotSupportedException();
@@ -369,6 +432,68 @@ namespace SpecFlow.Extensions.Framework.Helpers
 
                 case "WYOMING":
                     return "WY";
+
+                // already an abbreviation
+                case "AL":
+                case "AK":
+                case "AS":
+                case "AZ":
+                case "AR":
+                case "CA":
+                case "CO":
+                case "CT":
+                case "DE":
+                case "DC":
+                case "FM":
+                case "FL":
+                case "GA":
+                case "GU":
+                case "HI":
+                case "ID":
+                case "IL":
+                case "IN":
+                case "IA":
+                case "KS":
+                case "KY":
+                case "LA":
+                case "ME":
+                case "MH":
+                case "MD":
+                case "MA":
+                case "MI":
+                case "MN":
+                case "MS":
+                case "MO":
+                case "MT":
+                case "NE":
+                case "NV":
+                case "NH":
+                case "NJ":
+                case "NM":
+                case "NY":
+                case "NC":
+                case "ND":
+                case "MP":
+                case "OH":
+                case "OK":
+                case "OR":
+                case "PW":
+                case "PA":
+                case "PR":
+                case "RI":
+                case "SC":
+                case "SD":
+                case "TN":
+                case "TX":
+                case "UT":
+                case "VT":
+                case "VI":
+                case "VA":
+                case "WA":
+                case "WV":
+                case "WI":
+                case "WY":
+                    return name.ToUpper();
             }
             throw new NotSupportedException();
         }

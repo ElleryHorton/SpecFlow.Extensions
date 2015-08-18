@@ -7,10 +7,15 @@ namespace SpecFlow.Extensions.Framework.Hooks
     [Binding]
     public sealed class SetTestHash
     {
+        [BeforeFeature]
+        public static void BeforeFeature()
+        {
+            StringRandomize.FeatureHash = GetUpperCaseOrFirstCharacterOfEachWord(FeatureContext.Current.FeatureInfo.Title);
+        }
+
         [BeforeScenario]
         public void BeforeScenario()
         {
-            StringRandomize.FeatureHash = GetUpperCaseOrFirstCharacterOfEachWord(FeatureContext.Current.FeatureInfo.Title);
             StringRandomize.ScenarioHash = GetUpperCaseOrFirstCharacterOfEachWord(ScenarioContext.Current.ScenarioInfo.Title);
         }
 
