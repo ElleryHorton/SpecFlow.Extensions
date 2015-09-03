@@ -1,4 +1,5 @@
-﻿using System.Reflection;
+﻿using System;
+using System.Reflection;
 
 namespace SpecFlow.Extensions.PageObjects
 {
@@ -7,6 +8,8 @@ namespace SpecFlow.Extensions.PageObjects
         public abstract string Name { get; }
         public abstract object GetValue(object obj);
         public abstract void SetValue(object obj, object value);
+        public abstract MemberInfo MemberInfo { get; }
+        public abstract Type MemberType { get; }
     }
 
     public class FieldWrapper : MemberWrapper
@@ -25,6 +28,14 @@ namespace SpecFlow.Extensions.PageObjects
         {
             _fieldInfo.SetValue(obj, value);
         }
+        public override MemberInfo MemberInfo
+        {
+            get { return (MemberInfo)_fieldInfo; }
+        }
+        public override Type MemberType
+        {
+            get { return _fieldInfo.FieldType; }
+        }
     }
 
     public class PropertyWrapper : MemberWrapper
@@ -42,6 +53,14 @@ namespace SpecFlow.Extensions.PageObjects
         public override void SetValue(object obj, object value)
         {
             _propertyInfo.SetValue(obj, value);
+        }
+        public override MemberInfo MemberInfo
+        {
+            get { return (MemberInfo)_propertyInfo; }
+        }
+        public override Type MemberType
+        {
+            get { return _propertyInfo.PropertyType; }
         }
     }
 }
