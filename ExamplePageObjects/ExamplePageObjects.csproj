@@ -53,8 +53,10 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="LoginExamplePage.cs" />
+    <Compile Include="LoginExampleByExPage.cs" />
+    <Compile Include="LoginExampleFindsByPage.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="TestModalPage.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />

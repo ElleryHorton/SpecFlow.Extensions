@@ -60,7 +60,6 @@
     <Compile Include="Framework\Hooks\SetTestHash.cs" />
     <Compile Include="PageObjects\AssemblyContainsPagesAttribute.cs" />
     <Compile Include="PageObjects\AutoMapper.cs" />
-    <Compile Include="PageObjects\LoginExamplePage.cs" />
     <Compile Include="PageObjects\Macro.cs" />
     <Compile Include="PageObjects\Page.cs" />
     <Compile Include="PageObjects\PageFactory.cs" />
@@ -110,7 +109,7 @@
     </Reference>
     <Reference Include="nunit.framework, Version=2.6.4.14350, Culture=neutral, PublicKeyToken=96d09a1eb7f44a77, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\TestFrameworks\packages\NUnit.2.6.4\lib\nunit.framework.dll</HintPath>
+      <HintPath>packages\NUnit.2.6.4\lib\nunit.framework.dll</HintPath>
     </Reference>
     <Reference Include="Protractor">
       <HintPath>packages\Protractor.0.6.0\lib\net40\Protractor.dll</HintPath>
