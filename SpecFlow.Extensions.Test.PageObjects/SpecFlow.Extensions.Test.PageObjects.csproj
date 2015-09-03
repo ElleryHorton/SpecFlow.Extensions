@@ -63,7 +63,7 @@
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\SpecFlow.Extensions.csproj">
+    <ProjectReference Include="..\SpecFlow.Extensions\SpecFlow.Extensions.csproj">
       <Project>{d96a63f0-d973-4dbc-a052-6f985b9dae21}</Project>
       <Name>SpecFlow.Extensions</Name>
     </ProjectReference>
