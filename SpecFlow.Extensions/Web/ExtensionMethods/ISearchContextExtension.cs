@@ -76,7 +76,7 @@ namespace SpecFlow.Extensions.Web.ExtensionMethods
             int tryCount = 0;
             var e = new SelectElement(iFind.FindElement(byEx));
 
-            while ((tryCount < MAX_RETRIES) && e.Options.Count == 0)
+            while ((tryCount < MAX_RETRIES) && e == null)
             {
                 Thread.Sleep(MAX_DELAY_MS);
                 e = new SelectElement(iFind.FindElement(byEx));
