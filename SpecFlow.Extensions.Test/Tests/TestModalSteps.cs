@@ -4,9 +4,6 @@ using SpecFlow.Extensions.PageObjects;
 using SpecFlow.Extensions.WebDriver;
 using SpecFlow.Extensions.WebDriver.PortalDriver;
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using TechTalk.SpecFlow;
 
 namespace SpecFlow.Extensions.Tests
@@ -33,7 +30,7 @@ namespace SpecFlow.Extensions.Tests
             Assert.IsTrue(d.Exists(modalPage.B1));
             Assert.IsTrue(d.Exists(modalPage.B2));
             Assert.IsTrue(d.Exists(modalPage.B3));
-            for (int i = 0; i < 1; i++)
+            for (int i = 0; i < 3; i++)
             {
                 d.Click(modalPage.B1);
                 d.Click(modalPage.Close);

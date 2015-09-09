@@ -56,7 +56,11 @@
     <Compile Include="LoginExampleByExPage.cs" />
     <Compile Include="LoginExampleFindsByPage.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="TestCalendarPage.cs" />
     <Compile Include="TestModalPage.cs" />
+    <Compile Include="TestSlowGridPage.cs" />
+    <Compile Include="TestSlowSelectPage.cs" />
+    <Compile Include="TestTableCollapsePage.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />

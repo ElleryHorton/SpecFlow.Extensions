@@ -51,6 +51,10 @@
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\packages\Selenium.WebDriver.2.47.0\lib\net40\WebDriver.dll</HintPath>
     </Reference>
+    <Reference Include="WebDriver.Support, Version=2.47.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\packages\Selenium.Support.2.47.0\lib\net40\WebDriver.Support.dll</HintPath>
+    </Reference>
   </ItemGroup>
   <Choose>
     <When Condition="('$(VisualStudioVersion)' == '10.0' or '$(VisualStudioVersion)' == '') and '$(TargetFrameworkVersion)' == 'v3.5'">
@@ -66,17 +70,57 @@
   </Choose>
   <ItemGroup>
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Tests\TestSlowGrid.feature.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>TestSlowGrid.feature</DependentUpon>
+    </Compile>
+    <Compile Include="Tests\TestSlowGridSteps.cs" />
+    <Compile Include="Tests\TestSlowSelectSteps.cs" />
+    <Compile Include="Tests\TestCalendar.feature.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>TestCalendar.feature</DependentUpon>
+    </Compile>
+    <Compile Include="Tests\TestCalendarSteps.cs" />
+    <Compile Include="Tests\TestSlowSelect.feature.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>TestSlowSelect.feature</DependentUpon>
+    </Compile>
+    <Compile Include="Tests\TestTableCollapse.feature.cs">
+      <DependentUpon>TestTableCollapse.feature</DependentUpon>
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+    </Compile>
     <Compile Include="Tests\TestModal.feature.cs">
       <DependentUpon>TestModal.feature</DependentUpon>
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
     </Compile>
     <Compile Include="Tests\TestModalSteps.cs" />
+    <Compile Include="Tests\TestTableCollapseSteps.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />
     <None Include="packages.config">
       <SubType>Designer</SubType>
+    </None>
+    <None Include="Tests\TestCalendar.feature">
+      <Generator>SpecFlowSingleFileGenerator</Generator>
+      <LastGenOutput>TestCalendar.feature.cs</LastGenOutput>
+    </None>
+    <None Include="Tests\TestSlowGrid.feature">
+      <Generator>SpecFlowSingleFileGenerator</Generator>
+      <LastGenOutput>TestSlowGrid.feature.cs</LastGenOutput>
+    </None>
+    <None Include="Tests\TestSlowSelect.feature">
+      <Generator>SpecFlowSingleFileGenerator</Generator>
+      <LastGenOutput>TestSlowSelect.feature.cs</LastGenOutput>
+    </None>
+    <None Include="Tests\TestTableCollapse.feature">
+      <Generator>SpecFlowSingleFileGenerator</Generator>
+      <LastGenOutput>TestTableCollapse.feature.cs</LastGenOutput>
     </None>
     <None Include="Tests\TestModal.feature">
       <Generator>SpecFlowSingleFileGenerator</Generator>
@@ -103,6 +147,15 @@
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
     <Content Include="html\modals\README.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="html\slow_select\app.js">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="html\slow_select\ngOption.html">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="html\slow_select\select.html">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
   </ItemGroup>
