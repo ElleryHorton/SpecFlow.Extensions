@@ -6,8 +6,8 @@ extensions for SpecFlow and Selenium
 
 * <b>Tests should require fewer explicit waits</b> - the framework handles a lot of "timeout", "timing cracks", "invalid state", "stale element", and "not found" issues using smart or implicit waits. This reduces the need to use hardcoded or explicit waits in test code. Few waits means less code. Less code means less bugs. Less bugs means more reliable and maintainable automation.
 
-* <b>Test Suite of "badly" behaving html pages</b> - you can use the sample of "bad" html pages to compare this framework to your own (two frameworks enter, one framework leaves). These pages are designed to expose gaps in automation frameworks (they will break you... on purpose). Also, they serve as an example as to how to use this framework:
-<ol>Example "bad" pages:
+* <b>Test Suite of "badly" behaving html pages</b> - you can use the sample of "bad" html pages to compare this framework to your own (two frameworks enter, one framework leaves). These pages are designed to expose gaps in automation frameworks (they will break you... on purpose). Also, they serve as an example as to how to use this framework.
+<ol><b><u>Example "bad" pages:</u></b>
 <li>open and close slow modals</li>
 <li>modals that switch pages</li>
 <li>slow drop down lists</li>
@@ -29,6 +29,10 @@ extensions for SpecFlow and Selenium
 * <b>Templates for building PageFactory, DriverFactory, WebDriver wrappers (PortalDriver for your AUT), etc.</b>
 
 * <b>Tester objects</b> - embed hashes in test data that can be used to identify which tests created it, external JSON files for user credentials (login using roles instead of hardcoded username/password for maintainable/scalable feature files), tester emails based on machine name so that the "current tester" receives email alerts instead of a hardcoded email address, etc.
+
+* <b>WaitForPageLoad, WaitForUrlToChange, WaitForElement, FindElementOrNull</b>
+
+* <b>extended Bys</b> to find by Attribute (single or list), Column, or Text
 
 # Use
 
