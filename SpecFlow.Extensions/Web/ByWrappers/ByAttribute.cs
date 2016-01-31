@@ -29,7 +29,7 @@ namespace SpecFlow.Extensions.Web.ByWrappers
         }
 
         public ByAttribute(By by, Dictionary<string, string> attr, Func<string, string, bool> attrComparisonMethod, Input input = Input.Type, bool visibleOnly = true)
-            : this(by, attr, input, visibleOnly)
+            : base(by, input, visibleOnly)
         {
             Attributes = attr ?? new Dictionary<string, string>();
             ComparisonMethod = attrComparisonMethod;

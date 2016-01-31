@@ -9,13 +9,22 @@ namespace PageObjects
     public class TestCalendarPage
     {
         public ByEx ThemeDropDown { get { return new ByEx(By.Id("combo-1038-inputEl")); } }
-        //public ByText MiniCalendarMonthDropDown { get { return new ByText(By.TagName("span"), string.Format("{0} {1}", DateTime.Now.ToString("MMMM", CultureInfo.InvariantCulture), DateTime.Now.Year)); } }
         public ByEx MiniCalendarMonthDropDown { get { return new ByEx(By.Id("splitbutton-1035")); } }
         public ByText MiniCalendarOkButton { get { return new ByText(By.TagName("span"), "OK"); } }
-        public void MiniCalendarSelectDate(IPortalDriver d, string month, string year)
+        public ByAttribute MiniCalendarDay(DateTime date)
         {
-            d.Click(new ByEx(By.LinkText(month)));
-            d.Click(new ByEx(By.LinkText(year)));
+            return new ByAttribute(By.TagName("td"), "aria-label", string.Format("{0} {1}", date.ToString("MMMM"), date.ToString("dd")));
+        }        
+        public void MiniCalendarSelectDay(IPortalDriver d, DateTime date)
+        {
+            d.Click(MiniCalendarMonthDropDown);
+            MiniCalendarSelectDate(d, date);
+            d.Click(MiniCalendarDay(date));
+        }
+        public void MiniCalendarSelectDate(IPortalDriver d, DateTime date)
+        {
+            d.Click(new ByEx(By.LinkText(date.ToString("MMMM").Substring(0,3))));
+            d.Click(new ByEx(By.LinkText(date.ToString("yyyy"))));
             d.Click(MiniCalendarOkButton);
         }
 

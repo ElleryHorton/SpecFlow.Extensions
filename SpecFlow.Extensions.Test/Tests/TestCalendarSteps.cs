@@ -14,7 +14,7 @@ namespace SpecFlow.Extensions.Tests
         private IPortalDriver d;
         private TestCalendarPage _calPage;
         private TestCalendarPage CalPage { get { return _calPage ?? new TestCalendarPage(); } }
-        private DateTime date = DateTime.Parse("09/21/2015");
+        private DateTime date = DateTime.Parse("10/15/2018");
 
         public TestCalendarSteps(WebContext webContext)
         {
@@ -36,12 +36,13 @@ namespace SpecFlow.Extensions.Tests
         [When(@"I select a date in the mini calendar")]
         public void WhenISelectADateInTheMiniCalendar()
         {
-            CalPage.MiniCalendarSelectDate(d, "Oct", "2018");
+            CalPage.MiniCalendarSelectDate(d, date);
         }
         
         [When(@"I add an event")]
         public void WhenIAddAnEvent()
         {
+            CalPage.MiniCalendarSelectDay(d, date);
             d.Click(CalPage.CalendarDate(date));
             d.Type(CalPage.AddEventTitle, string.Format("this is a test {0}", DateTime.Now.ToString()));
             d.Click(CalPage.AddEventSaveButton);
@@ -50,6 +51,7 @@ namespace SpecFlow.Extensions.Tests
         [When(@"I add a detailed event")]
         public void WhenIAddADetailedEvent()
         {
+            CalPage.MiniCalendarSelectDay(d, date);
             d.Click(CalPage.CalendarDate(date));
             d.Click(CalPage.EditDetails);
             d.Type(CalPage.AddEventTitle, string.Format("this is a test {0}", DateTime.Now.ToString()));

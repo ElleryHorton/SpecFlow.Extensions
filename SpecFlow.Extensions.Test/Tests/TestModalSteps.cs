@@ -4,6 +4,7 @@ using SpecFlow.Extensions.PageObjects;
 using SpecFlow.Extensions.WebDriver;
 using SpecFlow.Extensions.WebDriver.PortalDriver;
 using System;
+using System.IO;
 using TechTalk.SpecFlow;
 
 namespace SpecFlow.Extensions.Tests
@@ -20,7 +21,7 @@ namespace SpecFlow.Extensions.Tests
         [Given(@"I go to the test modal page")]
         public void GivenIGoToTheTestModalPage()
         {
-            ((IWebDriver)d).Navigate().GoToUrl("file:///" + Environment.CurrentDirectory.Replace("\\", "/") + "/html/modals/index.html");
+            ((IWebDriver)d).Navigate().GoToUrl("file:///" + AppDomain.CurrentDomain.BaseDirectory.Replace("\\", "/") + "/html/modals/index.html");
         }
 
         [Then(@"I can open and close the modals")]

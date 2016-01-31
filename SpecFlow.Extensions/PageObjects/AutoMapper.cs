@@ -11,8 +11,10 @@ using TechTalk.SpecFlow;
 
 namespace SpecFlow.Extensions.PageObjects
 {
-    [Binding]
-    public static class AutoMapper<T> where T : Macro, new()
+    // default AutoMapper using the Macro implementation
+    public class AutoMapper : AutoMapper<Macro> { }
+
+    public class AutoMapper<T> where T : Macro, new()
     {
         public static IList<string> Headers;
         public static IList<IDictionary<string, string>> Rows;

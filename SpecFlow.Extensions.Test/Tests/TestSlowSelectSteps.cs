@@ -7,6 +7,7 @@ using SpecFlow.Extensions.Web.ExtensionMethods;
 using SpecFlow.Extensions.WebDriver;
 using SpecFlow.Extensions.WebDriver.PortalDriver;
 using System;
+using System.IO;
 using TechTalk.SpecFlow;
 
 namespace SpecFlow.Extensions.Test
@@ -26,7 +27,7 @@ namespace SpecFlow.Extensions.Test
         [Given(@"I go to the test select page")]
         public void GivenIGoToTheTestSlowSelectPage()
         {
-            ((IWebDriver)d).Navigate().GoToUrl("file:///" + Environment.CurrentDirectory.Replace("\\", "/") + "/html/slow_select/select.html");
+            ((IWebDriver)d).Navigate().GoToUrl("file:///" + AppDomain.CurrentDomain.BaseDirectory.Replace("\\", "/") + "/html/slow_select/select.html");
             var selectPage = new TestSlowSelectPage();
             selectByEx = selectPage.Select;
         }
@@ -34,7 +35,7 @@ namespace SpecFlow.Extensions.Test
         [Given(@"I go to the test select ngOption page")]
         public void GivenIGoToTheTestSelectNgOptionPage()
         {
-            ((IWebDriver)d).Navigate().GoToUrl("file:///" + Environment.CurrentDirectory.Replace("\\", "/") + "/html/slow_select/ngOption.html");
+            ((IWebDriver)d).Navigate().GoToUrl("file:///" + AppDomain.CurrentDomain.BaseDirectory.Replace("\\", "/") + "/html/slow_select/ngOption.html");
             var selectPage = new TestSlowSelectPage();
             selectByEx = selectPage.SelectNgOption;
         }
