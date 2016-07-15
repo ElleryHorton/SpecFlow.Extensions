@@ -14,7 +14,7 @@ namespace SpecFlow.Extensions.Web.ExtensionMethods
 
         public static bool HasChild(this ISearchContext iFind, ByEx byEx)
         {
-            return FindAll(iFind, byEx, 1, 0).Any(e => e.Displayed == true);
+            return FindAll(iFind, byEx, 1, 0).Any(e => ByEx.SafeDisplayed(e) == true);
         }
 
         public static IWebElement FindElement(this ISearchContext iFind, ByEx byEx)

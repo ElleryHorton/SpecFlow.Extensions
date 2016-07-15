@@ -10,6 +10,8 @@ namespace SpecFlow.Extensions.WebDriver.PortalDriver
     {
         void WaitForPageLoad();
 
+        void WaitForJQueryLoad();
+
         bool ClickChangesUrl(ByEx byEx);
 
         /*

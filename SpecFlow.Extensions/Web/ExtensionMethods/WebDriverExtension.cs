@@ -18,6 +18,13 @@ namespace SpecFlow.Extensions.Web.ExtensionMethods
             wait.Until(w => ((IJavaScriptExecutor)d).ExecuteScript("return document.readyState").Equals("complete"));
         }
 
+        public static void WaitForJQueryLoad(this IWebDriver driver, int seconds = 60)
+        {
+            IWait<IWebDriver> wait = new WebDriverWait(driver, TimeSpan.FromSeconds(seconds));
+            var d = (driver is IWrapsDriver) ? ((IWrapsDriver)driver).WrappedDriver : driver;
+            wait.Until(w => ((IJavaScriptExecutor)d).ExecuteScript("return jQuery.active").ToString().Equals("0"));
+        }
+
         public static void WaitForUrlToChange(this IWebDriver driver, string oldUrl, int timeMilliseconds = MAX_DELAY_MS)
         {
             while (driver.Url == oldUrl && timeMilliseconds > 0)

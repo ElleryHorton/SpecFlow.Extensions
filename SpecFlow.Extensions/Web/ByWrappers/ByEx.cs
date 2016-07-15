@@ -1,4 +1,5 @@
 ﻿using OpenQA.Selenium;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 
@@ -19,7 +20,19 @@ namespace SpecFlow.Extensions.Web.ByWrappers
 
         virtual public IEnumerable<IWebElement> FilterElements(IEnumerable<IWebElement> elements)
         {
-            return isVisible ? elements.Where(e => e.Displayed) : elements;
+            return isVisible ? elements.Where(e => SafeDisplayed(e)) : elements;
+        }
+
+        public static bool SafeDisplayed(IWebElement e)
+        {
+            try
+            {
+                return e.Displayed;
+            }
+            catch
+            {
+                return false;
+            }
         }
     }
 }

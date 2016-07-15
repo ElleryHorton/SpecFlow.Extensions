@@ -7,7 +7,7 @@ namespace SpecFlow.Extensions.PageObjects
 		private const string DllExtension = ".dll";
 		private const string SamePageSubSectionDelimiter = "_";
 
-		public string Uri
+		public virtual string Uri
 		{
 			get
 			{
@@ -24,7 +24,7 @@ namespace SpecFlow.Extensions.PageObjects
 				}
 
 				// remove assembly name from full class name and convert to Uri
-				return fullClassName.Replace(assemblyName, string.Empty).Replace(".", @"/");
+				return fullClassName.Replace(string.Format("{0}.", assemblyName), string.Empty).Replace(".", @"/");
 			}
 		}
 	}

@@ -31,6 +31,11 @@ namespace SpecFlow.Extensions.WebDriver.PortalDriver
             WrappedDriver.WaitForPageLoad();
         }
 
+        public void WaitForJQueryLoad()
+        {
+            WrappedDriver.WaitForJQueryLoad();
+        }
+
         public bool ClickChangesUrl(ByEx byEx)
         {
             string oldUrl = WrappedDriver.Url;
